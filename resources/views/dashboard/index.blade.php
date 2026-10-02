@@ -1,0 +1,276 @@
+@extends('layouts.app')
+
+@section('title', 'Operations Dashboard')
+
+@section('content')
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">Gudi Chemicals — Operations Dashboard</h4>
+        <p class="text-muted small mb-0">Real-time production, stock, POS sales, and GST overview</p>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex gap-2">
+        <a href="{{ route('pos.index') }}" class="btn btn-success fw-semibold shadow-sm">
+            <i class="fa-solid fa-bolt me-1"></i> Open POS Billing Desk
+        </a>
+        <a href="{{ route('production.orders.create') }}" class="btn btn-primary fw-semibold shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> New Production Batch
+        </a>
+    </div>
+</div>
+
+<!-- Primary Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Today's Gross Sales</span>
+                    <h3 class="fw-bold my-1 text-dark">₹{{ number_format($todayGrossSales, 2) }}</h3>
+                    <small class="text-success"><i class="fa-solid fa-file-invoice"></i> {{ $todayInvoicesCount }} Invoices Posted</small>
+                </div>
+                <div class="rounded-3 p-3 bg-primary bg-opacity-10 text-primary">
+                    <i class="fa-solid fa-chart-line fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Receivables (Customers)</span>
+                    <h3 class="fw-bold my-1 text-dark">₹{{ number_format($totalCustomerReceivables, 2) }}</h3>
+                    <small class="text-muted"><i class="fa-solid fa-users"></i> Outstanding Credit</small>
+                </div>
+                <div class="rounded-3 p-3 bg-info bg-opacity-10 text-info">
+                    <i class="fa-solid fa-hand-holding-dollar fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Payables (Vendors)</span>
+                    <h3 class="fw-bold my-1 text-dark">₹{{ number_format($totalVendorPayables, 2) }}</h3>
+                    <small class="text-muted"><i class="fa-solid fa-truck"></i> Outstanding Invoices</small>
+                </div>
+                <div class="rounded-3 p-3 bg-warning bg-opacity-10 text-warning">
+                    <i class="fa-solid fa-credit-card fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-stat border-0 shadow-sm p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Active Batches</span>
+                    <h3 class="fw-bold my-1 text-dark">{{ $pendingBatchesCount }}</h3>
+                    <small class="text-secondary"><i class="fa-solid fa-industry"></i> In Compounding / QC</small>
+                </div>
+                <div class="rounded-3 p-3 bg-success bg-opacity-10 text-success">
+                    <i class="fa-solid fa-flask-vial fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Collections Breakdown & Low Stock Alert -->
+<div class="row g-3 mb-4">
+    <!-- Today's Payment Collections -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0"><i class="fa-solid fa-wallet text-primary me-2"></i> Today's Payment Collections</h6>
+                <span class="badge bg-light text-dark border">{{ date('d M Y') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 text-center mb-3">
+                    <div class="col-6">
+                        <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block">Cash</small>
+                            <span class="fw-bold text-success">₹{{ number_format($todayPayments['cash'] ?? 0, 2) }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block">UPI</small>
+                            <span class="fw-bold text-primary">₹{{ number_format($todayPayments['upi'] ?? 0, 2) }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block">Card</small>
+                            <span class="fw-bold text-info">₹{{ number_format($todayPayments['card'] ?? 0, 2) }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 border rounded bg-light">
+                            <small class="text-muted d-block">Bank Transfer</small>
+                            <span class="fw-bold text-dark">₹{{ number_format($todayPayments['bank_transfer'] ?? 0, 2) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-secondary py-2 px-3 small d-flex justify-content-between align-items-center mb-0">
+                    <span>Total Collected Today:</span>
+                    <strong class="fs-6">₹{{ number_format(array_sum($todayPayments), 2) }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Raw Chemical & Finished Goods Low Stock Alerts -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0"><i class="fa-solid fa-triangle-exclamation text-danger me-2"></i> Stock Reorder Level Alerts</h6>
+                <a href="{{ route('inventory.index') }}" class="btn btn-sm btn-outline-secondary">View All Stock</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Item / SKU</th>
+                                <th>Type</th>
+                                <th class="text-end">Current Stock</th>
+                                <th class="text-end">Reorder Level</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($lowStockProducts as $prod)
+                                <tr>
+                                    <td>
+                                        <strong>{{ $prod->name }}</strong>
+                                        <div class="text-muted small">{{ $prod->sku }}</div>
+                                    </td>
+                                    <td><span class="badge bg-secondary">{{ ucwords(str_replace('_', ' ', $prod->item_type)) }}</span></td>
+                                    <td class="text-end fw-bold text-danger">{{ number_format($prod->total_stock, 2) }} {{ $prod->unit?->code }}</td>
+                                    <td class="text-end">{{ number_format($prod->reorder_level, 2) }} {{ $prod->unit?->code }}</td>
+                                    <td><span class="badge bg-danger">Low Stock</span></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="fa-regular fa-circle-check text-success fa-2x d-block mb-1"></i>
+                                        All raw chemicals and products are above reorder thresholds.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Invoices & Batches Row -->
+<div class="row g-3">
+    <!-- Recent Invoices -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0"><i class="fa-solid fa-receipt text-primary me-2"></i> Recent Invoices</h6>
+                <a href="{{ route('invoices.index') }}" class="btn btn-sm btn-link text-decoration-none">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentInvoices as $inv)
+                                <tr>
+                                    <td>
+                                        <strong>{{ $inv->invoice_number }}</strong>
+                                        <div class="text-muted small">{{ $inv->invoice_date->format('d M Y') }}</div>
+                                    </td>
+                                    <td>{{ $inv->customer?->name }}</td>
+                                    <td class="fw-bold">₹{{ number_format($inv->grand_total, 2) }}</td>
+                                    <td>
+                                        <span class="badge {{ $inv->payment_status === 'paid' ? 'bg-success' : ($inv->payment_status === 'partially_paid' ? 'bg-warning' : 'bg-danger') }}">
+                                            {{ ucfirst($inv->payment_status) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ route('invoices.show', $inv->id) }}" class="btn btn-sm btn-outline-primary py-0 px-2">
+                                            <i class="fa-solid fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="5" class="text-center text-muted py-3">No invoices posted yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Production Batches -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0"><i class="fa-solid fa-industry text-success me-2"></i> Recent Production Batches</h6>
+                <a href="{{ route('production.orders.index') }}" class="btn btn-sm btn-link text-decoration-none">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Batch #</th>
+                                <th>Chemical Product</th>
+                                <th>Planned Qty</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentBatches as $batch)
+                                <tr>
+                                    <td>
+                                        <strong>{{ $batch->batch_number }}</strong>
+                                        <div class="text-muted small">{{ $batch->order_date->format('d M Y') }}</div>
+                                    </td>
+                                    <td>{{ $batch->outputProduct?->name }}</td>
+                                    <td>{{ number_format($batch->planned_qty, 2) }}</td>
+                                    <td>
+                                        <span class="badge {{ $batch->status === 'completed' ? 'bg-success' : ($batch->status === 'in_progress' ? 'bg-info' : 'bg-secondary') }}">
+                                            {{ ucfirst(str_replace('_', ' ', $batch->status)) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ route('production.orders.show', $batch->id) }}" class="btn btn-sm btn-outline-primary py-0 px-2">
+                                            <i class="fa-solid fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="5" class="text-center text-muted py-3">No production orders initiated yet.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
