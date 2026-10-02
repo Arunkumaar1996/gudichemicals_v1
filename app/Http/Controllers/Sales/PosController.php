@@ -99,4 +99,31 @@ class PosController extends Controller
         return redirect()->route('invoices.show', $invoice->id)
             ->with('success', "Invoice {$invoice->invoice_number} posted successfully.");
     }
+
+    /**
+     * Quick Customer Registration from POS Modal
+     */
+    public function quickCustomer(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'gstin' => ['nullable', 'string', 'max:15'],
+            'customer_type' => ['required', 'in:retail,wholesale'],
+        ]);
+
+        $customer = Customer::create([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'gstin' => $validated['gstin'],
+            'customer_type' => $validated['customer_type'],
+            'credit_limit' => 0,
+            'is_active' => true,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'customer' => $customer,
+        ]);
+    }
 }

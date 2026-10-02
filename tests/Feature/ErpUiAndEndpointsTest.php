@@ -221,5 +221,44 @@ class ErpUiAndEndpointsTest extends TestCase
         $productionReport = $this->actingAs($this->admin)->get('/reports/production');
         $productionReport->assertStatus(200);
         $productionReport->assertSee('Production Yield & Costing Report');
+
+        $gstReport = $this->actingAs($this->admin)->get('/reports/gst');
+        $gstReport->assertStatus(200);
+        $gstReport->assertSee('Table 12: HSN');
+
+        $receivablesReport = $this->actingAs($this->admin)->get('/reports/receivables');
+        $receivablesReport->assertStatus(200);
+        $receivablesReport->assertSee('Customer Receivables');
+
+        $payablesReport = $this->actingAs($this->admin)->get('/reports/payables');
+        $payablesReport->assertStatus(200);
+        $payablesReport->assertSee('Vendor Payables');
+
+        $collectionsReport = $this->actingAs($this->admin)->get('/reports/collections');
+        $collectionsReport->assertStatus(200);
+        $collectionsReport->assertSee('Daily Cash & Collections Register', false);
+
+        // Test CSV streaming download
+        $csvResponse = $this->actingAs($this->admin)->get('/reports/sales?export=csv');
+        $csvResponse->assertStatus(200);
+        $csvResponse->assertHeader('content-type', 'text/csv; charset=UTF-8');
+    }
+
+    public function test_users_management_page_renders_and_can_create_user(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/users');
+        $response->assertStatus(200);
+        $response->assertSee('Register New Staff User');
+
+        $storeResponse = $this->actingAs($this->admin)->post('/users', [
+            'name' => 'Operator Mahesh',
+            'email' => 'mahesh@gudichemicals.com',
+            'phone' => '9876543210',
+            'role' => 'Production Operator',
+            'password' => 'Secret@123',
+        ]);
+
+        $storeResponse->assertRedirect();
+        $this->assertDatabaseHas('users', ['email' => 'mahesh@gudichemicals.com']);
     }
 }

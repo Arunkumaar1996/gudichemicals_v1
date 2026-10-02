@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [PosController::class, 'index'])->name('index');
         Route::post('/calculate', [PosController::class, 'calculate'])->name('calculate');
         Route::post('/store', [PosController::class, 'store'])->name('store');
+        Route::post('/customer/quick', [PosController::class, 'quickCustomer'])->name('customer.quick');
     });
 
     Route::prefix('invoices')->name('invoices.')->group(function () {
@@ -154,6 +155,10 @@ Route::middleware('auth')->group(function () {
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+        Route::get('/gst', [ReportController::class, 'gst'])->name('gst');
+        Route::get('/receivables', [ReportController::class, 'receivables'])->name('receivables');
+        Route::get('/payables', [ReportController::class, 'payables'])->name('payables');
+        Route::get('/collections', [ReportController::class, 'collections'])->name('collections');
         Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
         Route::get('/production', [ReportController::class, 'production'])->name('production');
     });
@@ -167,6 +172,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
         Route::post('/{user}/toggle', [UserController::class, 'toggle'])->name('toggle');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
 });
