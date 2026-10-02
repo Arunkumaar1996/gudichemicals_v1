@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\InventoryBatch;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Warehouse;
@@ -18,25 +19,35 @@ class PosController extends Controller
 
     public function index()
     {
-        // High-speed initial load: load top 48 fast-moving active chemical products
+        $warehouses = Warehouse::where('is_active', true)->get();
+        $defaultWarehouse = $warehouses->first();
+        $warehouseId = $defaultWarehouse?->id;
+
+        // High-speed initial load: load top 48 fast-moving active chemical products with batch details
         $products = Product::where('is_active', true)
             ->whereIn('item_type', ['finished_goods', 'trading', 'semi_finished'])
-            ->with(['unit:id,code', 'category:id,name', 'stockBalances:id,product_id,warehouse_id,quantity'])
+            ->with([
+                'unit:id,code', 
+                'category:id,name', 
+                'stockBalances:id,product_id,warehouse_id,batch_id,quantity',
+                'batches' => fn($q) => $q->where('is_active', true)->with('stockBalances')
+            ])
             ->orderBy('name')
             ->limit(48)
-            ->get();
+            ->get()
+            ->map(function ($p) use ($warehouseId) {
+                return $this->formatProductItem($p, $warehouseId);
+            });
 
         $categories = ProductCategory::where('is_active', true)->orderBy('name')->get();
         $customers = Customer::where('is_active', true)->orderBy('name')->get();
-        $warehouses = Warehouse::where('is_active', true)->get();
         $defaultCustomer = Customer::walkInCustomer();
 
         return view('sales.pos.index', compact('products', 'categories', 'customers', 'warehouses', 'defaultCustomer'));
     }
 
     /**
-     * Ultra-fast debounced search API for 4,000+ chemical items.
-     * Uses indexed barcode, sku prefix, and name matching with warehouse stock summary.
+     * Ultra-fast debounced search API for 4,000+ chemical items with active lots.
      */
     public function search(Request $request)
     {
@@ -59,32 +70,20 @@ class PosController extends Controller
             ->with([
                 'unit:id,code',
                 'category:id,name',
-                'stockBalances' => fn($b) => $warehouseId ? $b->where('warehouse_id', $warehouseId) : $b
+                'stockBalances' => fn($b) => $warehouseId ? $b->where('warehouse_id', $warehouseId) : $b,
+                'batches' => fn($q) => $q->where('is_active', true)->with('stockBalances')
             ])
             ->limit(48)
             ->get()
-            ->map(function ($p) {
-                return [
-                    'id' => $p->id,
-                    'name' => $p->name,
-                    'sku' => $p->sku,
-                    'barcode' => $p->barcode,
-                    'category_id' => $p->category_id,
-                    'category_name' => $p->category?->name,
-                    'unit' => $p->unit?->code ?: 'NOS',
-                    'retail_price' => (float)$p->retail_price,
-                    'wholesale_price' => (float)$p->wholesale_price,
-                    'gst_rate' => (float)$p->gst_rate,
-                    'hsn_code' => $p->hsn_code,
-                    'stock' => (float)$p->stockBalances->sum('quantity'),
-                ];
+            ->map(function ($p) use ($warehouseId) {
+                return $this->formatProductItem($p, $warehouseId);
             });
 
         return response()->json($products);
     }
 
     /**
-     * Exact 1-millisecond barcode scan lookup for instant add-to-cart.
+     * Exact 1-millisecond barcode scan lookup with available lots.
      */
     public function barcode(Request $request)
     {
@@ -103,7 +102,8 @@ class PosController extends Controller
             ->with([
                 'unit:id,code',
                 'category:id,name',
-                'stockBalances' => fn($b) => $warehouseId ? $b->where('warehouse_id', $warehouseId) : $b
+                'stockBalances' => fn($b) => $warehouseId ? $b->where('warehouse_id', $warehouseId) : $b,
+                'batches' => fn($q) => $q->where('is_active', true)->with('stockBalances')
             ])
             ->first();
 
@@ -113,21 +113,44 @@ class PosController extends Controller
 
         return response()->json([
             'found' => true,
-            'product' => [
-                'id' => $product->id,
-                'name' => $product->name,
-                'sku' => $product->sku,
-                'barcode' => $product->barcode,
-                'category_id' => $product->category_id,
-                'category_name' => $product->category?->name,
-                'unit' => $product->unit?->code ?: 'NOS',
-                'retail_price' => (float)$product->retail_price,
-                'wholesale_price' => (float)$product->wholesale_price,
-                'gst_rate' => (float)$product->gst_rate,
-                'hsn_code' => $product->hsn_code,
-                'stock' => (float)$product->stockBalances->sum('quantity'),
-            ]
+            'product' => $this->formatProductItem($product, $warehouseId)
         ]);
+    }
+
+    /**
+     * Helper to format consistent product payload with available lot breakdown.
+     */
+    protected function formatProductItem(Product $p, ?int $warehouseId): array
+    {
+        $batches = $p->batches->map(function ($b) use ($warehouseId) {
+            $stock = (float)($warehouseId ? $b->stockBalances->where('warehouse_id', $warehouseId)->sum('quantity') : $b->stockBalances->sum('quantity'));
+            return [
+                'id' => $b->id,
+                'batch_number' => $b->batch_number,
+                'supplier_lot_number' => $b->supplier_lot_number,
+                'mfg_date' => $b->mfg_date ? $b->mfg_date->format('d/m/Y') : null,
+                'expiry_date' => $b->expiry_date ? $b->expiry_date->format('d/m/Y') : null,
+                'stock' => $stock,
+            ];
+        })->filter(fn($b) => $b['stock'] > 0)->values();
+
+        $totalStock = (float)($warehouseId ? $p->stockBalances->where('warehouse_id', $warehouseId)->sum('quantity') : $p->stockBalances->sum('quantity'));
+
+        return [
+            'id' => $p->id,
+            'name' => $p->name,
+            'sku' => $p->sku,
+            'barcode' => $p->barcode,
+            'category_id' => $p->category_id,
+            'category_name' => $p->category?->name,
+            'unit' => $p->unit?->code ?: 'NOS',
+            'retail_price' => (float)$p->retail_price,
+            'wholesale_price' => (float)$p->wholesale_price,
+            'gst_rate' => (float)$p->gst_rate,
+            'hsn_code' => $p->hsn_code,
+            'stock' => $totalStock,
+            'batches' => $batches,
+        ];
     }
 
     /**
@@ -142,6 +165,7 @@ class PosController extends Controller
             'cart_items.*.product_id' => ['required', 'exists:products,id'],
             'cart_items.*.quantity' => ['required', 'numeric', 'gt:0'],
             'cart_items.*.discount_amount' => ['nullable', 'numeric', 'min:0'],
+            'cart_items.*.batch_id' => ['nullable', 'exists:inventory_batches,id'],
         ]);
 
         $calculation = $this->invoicePostingService->calculatePreview(
@@ -184,6 +208,7 @@ class PosController extends Controller
             'cart_items.*.product_id' => ['required', 'exists:products,id'],
             'cart_items.*.quantity' => ['required', 'numeric', 'gt:0'],
             'cart_items.*.discount_amount' => ['nullable', 'numeric', 'min:0'],
+            'cart_items.*.batch_id' => ['nullable', 'exists:inventory_batches,id'],
             'payments' => ['required', 'array', 'min:1'],
             'payments.*.amount' => ['required', 'numeric', 'min:0'],
             'payments.*.payment_method' => ['required', 'in:cash,upi,card,bank_transfer,credit'],

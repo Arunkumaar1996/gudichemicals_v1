@@ -268,5 +268,70 @@ class MastersSeeder extends Seeder
                 'description' => 'Inhibited acid pickling and rust descaling solution in 5L container',
             ]
         );
+
+        // Seed Multiple Batches & Stock for Finished Chemicals
+        $invService = app(\App\Services\Inventory\InventoryService::class);
+        $prodDegrease = Product::where('sku', 'FG-DEGREASE-1L')->first();
+        $prodAcid = Product::where('sku', 'FG-ACID-CLEAN-5L')->first();
+
+        if ($prodDegrease && $whMain) {
+            $batchD1 = \App\Models\InventoryBatch::firstOrCreate(
+                ['product_id' => $prodDegrease->id, 'batch_number' => 'LOT-DG-2026-01'],
+                ['mfg_date' => '2026-08-01', 'expiry_date' => '2027-07-31', 'cost_per_unit' => 65.0, 'is_active' => true]
+            );
+            $invService->addStock(
+                productId: $prodDegrease->id,
+                warehouseId: $whMain->id,
+                quantity: 45.0,
+                unitCost: 65.0,
+                movementType: 'opening_stock',
+                batchId: $batchD1->id,
+                notes: 'Primary production lot 01'
+            );
+
+            $batchD2 = \App\Models\InventoryBatch::firstOrCreate(
+                ['product_id' => $prodDegrease->id, 'batch_number' => 'LOT-DG-2026-02'],
+                ['mfg_date' => '2026-09-15', 'expiry_date' => '2027-09-14', 'cost_per_unit' => 65.0, 'is_active' => true]
+            );
+            $invService->addStock(
+                productId: $prodDegrease->id,
+                warehouseId: $whMain->id,
+                quantity: 80.0,
+                unitCost: 65.0,
+                movementType: 'opening_stock',
+                batchId: $batchD2->id,
+                notes: 'Secondary production lot 02'
+            );
+        }
+
+        if ($prodAcid && $whMain) {
+            $batchA1 = \App\Models\InventoryBatch::firstOrCreate(
+                ['product_id' => $prodAcid->id, 'batch_number' => 'LOT-AC-2026-01'],
+                ['mfg_date' => '2026-07-10', 'expiry_date' => '2027-07-09', 'cost_per_unit' => 220.0, 'is_active' => true]
+            );
+            $invService->addStock(
+                productId: $prodAcid->id,
+                warehouseId: $whMain->id,
+                quantity: 30.0,
+                unitCost: 220.0,
+                movementType: 'opening_stock',
+                batchId: $batchA1->id,
+                notes: 'Acid cleaner lot 01'
+            );
+
+            $batchA2 = \App\Models\InventoryBatch::firstOrCreate(
+                ['product_id' => $prodAcid->id, 'batch_number' => 'LOT-AC-2026-02'],
+                ['mfg_date' => '2026-09-20', 'expiry_date' => '2027-09-19', 'cost_per_unit' => 220.0, 'is_active' => true]
+            );
+            $invService->addStock(
+                productId: $prodAcid->id,
+                warehouseId: $whMain->id,
+                quantity: 50.0,
+                unitCost: 220.0,
+                movementType: 'opening_stock',
+                batchId: $batchA2->id,
+                notes: 'Acid cleaner lot 02'
+            );
+        }
     }
 }

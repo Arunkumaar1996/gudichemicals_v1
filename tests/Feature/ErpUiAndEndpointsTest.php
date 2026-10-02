@@ -100,6 +100,8 @@ class ErpUiAndEndpointsTest extends TestCase
         $warehouse = Warehouse::where('code', 'WH-MAIN')->firstOrFail();
         $invService = app(InventoryService::class);
 
+        $initialStock = $invService->getAvailableStock($product->id, $warehouse->id);
+
         // Pre-fill stock
         $invService->addStock($product->id, $warehouse->id, 20.0, 65.0, 'opening_stock');
 
@@ -125,8 +127,8 @@ class ErpUiAndEndpointsTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
 
-        // Verify stock deducted by 3: 20 - 3 = 17
-        $this->assertEquals(17.0, $invService->getAvailableStock($product->id, $warehouse->id));
+        // Verify stock deducted by 3:
+        $this->assertEquals($initialStock + 20.0 - 3.0, $invService->getAvailableStock($product->id, $warehouse->id));
 
         // Verify invoice was created in database
         $this->assertDatabaseHas('sales_invoices', [

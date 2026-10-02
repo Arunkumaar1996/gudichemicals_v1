@@ -116,6 +116,8 @@ class ErpCoreServicesTest extends TestCase
         $warehouse = Warehouse::where('code', 'WH-MAIN')->firstOrFail();
         $customer = Customer::walkInCustomer();
 
+        $initialStock = $inventoryService->getAvailableStock($product->id, $warehouse->id);
+
         // Add 50 bottles of finished product to inventory
         $inventoryService->addStock(
             productId: $product->id,
@@ -125,7 +127,7 @@ class ErpCoreServicesTest extends TestCase
             movementType: 'opening_stock'
         );
 
-        $this->assertEquals(50.0, $inventoryService->getAvailableStock($product->id, $warehouse->id));
+        $this->assertEquals($initialStock + 50.0, $inventoryService->getAvailableStock($product->id, $warehouse->id));
 
         // Post an invoice for 5 bottles at Retail price (₹180 * 5 = ₹900 + 18% GST = ₹1062)
         $invoice = $invoiceService->postInvoice(
@@ -152,8 +154,8 @@ class ErpCoreServicesTest extends TestCase
         $this->assertEquals(1062.00, (float)$invoice->grand_total);
         $this->assertEquals('paid', $invoice->payment_status);
 
-        // Verify stock reduced by 5: 50 - 5 = 45
-        $this->assertEquals(45.0, $inventoryService->getAvailableStock($product->id, $warehouse->id));
+        // Verify stock reduced by 5
+        $this->assertEquals($initialStock + 50.0 - 5.0, $inventoryService->getAvailableStock($product->id, $warehouse->id));
     }
 
     public function test_chemical_production_order_scaling_and_batch_finalization(): void
@@ -225,6 +227,8 @@ class ErpCoreServicesTest extends TestCase
             ['consumption_id' => $sulphReq->id, 'actual_consumed_qty' => 30.0],
         ];
 
+        $initialFgStock = $inventoryService->getAvailableStock($fgAcid->id, $warehouse->id);
+
         $finalizedOrder = $productionService->finalizeBatch(
             order: $order,
             actualYieldQty: 20.0,
@@ -241,7 +245,7 @@ class ErpCoreServicesTest extends TestCase
         $this->assertEquals(420.0, $inventoryService->getAvailableStock($rawWater->id, $warehouse->id));
         // Sulph: 200 - 30 = 170
         $this->assertEquals(170.0, $inventoryService->getAvailableStock($rawSulph->id, $warehouse->id));
-        // Finished Goods: 0 + 20 = 20
-        $this->assertEquals(20.0, $inventoryService->getAvailableStock($fgAcid->id, $warehouse->id));
+        // Finished Goods: initial + 20
+        $this->assertEquals($initialFgStock + 20.0, $inventoryService->getAvailableStock($fgAcid->id, $warehouse->id));
     }
 }
