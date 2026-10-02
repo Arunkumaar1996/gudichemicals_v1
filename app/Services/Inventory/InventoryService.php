@@ -113,60 +113,177 @@ class InventoryService
             $userId,
             $allowNegative
         ) {
-            $balance = StockBalance::where('product_id', $productId)
-                ->where('warehouse_id', $warehouseId)
-                ->where('batch_id', $batchId)
-                ->lockForUpdate()
-                ->first();
+            $product = Product::find($productId);
+            $prodName = $product ? $product->name : "Product #{$productId}";
 
-            $currentStock = $balance ? (float)$balance->quantity : 0.0;
+            // 1. If a specific batch is requested:
+            if ($batchId !== null) {
+                $balance = StockBalance::where('product_id', $productId)
+                    ->where('warehouse_id', $warehouseId)
+                    ->where('batch_id', $batchId)
+                    ->lockForUpdate()
+                    ->first();
 
-            if (!$allowNegative && $currentStock < $quantity) {
-                $product = Product::find($productId);
-                $name = $product ? $product->name : "Product #{$productId}";
-                throw new InsufficientStockException("Insufficient stock for {$name}. Available: {$currentStock}, Requested: {$quantity}.");
-            }
+                $currentStock = $balance ? (float)$balance->quantity : 0.0;
 
-            if (!$balance) {
-                $balance = StockBalance::create([
+                if (!$allowNegative && $currentStock < $quantity) {
+                    throw new InsufficientStockException("Insufficient stock for {$prodName}. Available: {$currentStock}, Requested: {$quantity}.");
+                }
+
+                if (!$balance) {
+                    $balance = StockBalance::create([
+                        'product_id' => $productId,
+                        'warehouse_id' => $warehouseId,
+                        'batch_id' => $batchId,
+                        'quantity' => 0.0000,
+                        'reserved_quantity' => 0.0000,
+                    ]);
+                    $balance = StockBalance::where('id', $balance->id)->lockForUpdate()->first();
+                }
+
+                $newQty = (float)$balance->quantity - $quantity;
+                $balance->quantity = $newQty;
+                $balance->save();
+
+                $batch = InventoryBatch::find($batchId);
+                $unitCost = $batch ? (float)$batch->cost_per_unit : 0.0;
+                if ($unitCost <= 0) {
+                    $unitCost = $product ? (float)$product->purchase_cost : 0.0;
+                }
+
+                return StockMovement::create([
+                    'movement_date' => now(),
                     'product_id' => $productId,
                     'warehouse_id' => $warehouseId,
                     'batch_id' => $batchId,
-                    'quantity' => 0.0000,
-                    'reserved_quantity' => 0.0000,
+                    'movement_type' => $movementType,
+                    'reference_type' => $referenceType,
+                    'reference_id' => $referenceId,
+                    'quantity' => -$quantity,
+                    'unit_cost' => $unitCost,
+                    'balance_after' => $newQty,
+                    'notes' => $notes,
+                    'created_by' => $userId ?? auth()->id(),
                 ]);
-                $balance = StockBalance::where('id', $balance->id)->lockForUpdate()->first();
             }
 
-            $newQty = (float)$balance->quantity - $quantity;
-            $balance->quantity = $newQty;
-            $balance->save();
+            // 2. If batchId is NULL: Check total available stock across all batches and unbatched
+            $totalAvailable = (float) StockBalance::where('product_id', $productId)
+                ->where('warehouse_id', $warehouseId)
+                ->sum('quantity');
 
-            // Fetch product cost price for valuation record
-            $unitCost = 0.0;
-            if ($batchId) {
-                $batch = InventoryBatch::find($batchId);
-                $unitCost = $batch ? (float)$batch->cost_per_unit : 0.0;
-            }
-            if ($unitCost <= 0) {
-                $prod = Product::find($productId);
-                $unitCost = $prod ? (float)$prod->purchase_cost : 0.0;
+            if (!$allowNegative && $totalAvailable < $quantity) {
+                throw new InsufficientStockException("Insufficient stock for {$prodName}. Available: {$totalAvailable}, Requested: {$quantity}.");
             }
 
-            return StockMovement::create([
-                'movement_date' => now(),
-                'product_id' => $productId,
-                'warehouse_id' => $warehouseId,
-                'batch_id' => $batchId,
-                'movement_type' => $movementType,
-                'reference_type' => $referenceType,
-                'reference_id' => $referenceId,
-                'quantity' => -$quantity, // negative
-                'unit_cost' => $unitCost,
-                'balance_after' => $newQty,
-                'notes' => $notes,
-                'created_by' => $userId ?? auth()->id(),
-            ]);
+            // Check if unbatched balance alone is sufficient
+            $unbatchedBalance = StockBalance::where('product_id', $productId)
+                ->where('warehouse_id', $warehouseId)
+                ->whereNull('batch_id')
+                ->lockForUpdate()
+                ->first();
+
+            if ($unbatchedBalance && (float)$unbatchedBalance->quantity >= $quantity) {
+                $newQty = (float)$unbatchedBalance->quantity - $quantity;
+                $unbatchedBalance->quantity = $newQty;
+                $unbatchedBalance->save();
+
+                $unitCost = $product ? (float)$product->purchase_cost : 0.0;
+
+                return StockMovement::create([
+                    'movement_date' => now(),
+                    'product_id' => $productId,
+                    'warehouse_id' => $warehouseId,
+                    'batch_id' => null,
+                    'movement_type' => $movementType,
+                    'reference_type' => $referenceType,
+                    'reference_id' => $referenceId,
+                    'quantity' => -$quantity,
+                    'unit_cost' => $unitCost,
+                    'balance_after' => $newQty,
+                    'notes' => $notes,
+                    'created_by' => $userId ?? auth()->id(),
+                ]);
+            }
+
+            // Otherwise, allocate across active batches FIFO (oldest expiry or mfg date first)
+            $batchBalances = StockBalance::where('product_id', $productId)
+                ->where('warehouse_id', $warehouseId)
+                ->whereNotNull('batch_id')
+                ->where('quantity', '>', 0)
+                ->with('batch')
+                ->lockForUpdate()
+                ->get()
+                ->sortBy(function ($sb) {
+                    return $sb->batch?->expiry_date?->timestamp ?? $sb->batch?->mfg_date?->timestamp ?? $sb->batch_id;
+                });
+
+            $remainingQty = $quantity;
+            $lastMovement = null;
+
+            foreach ($batchBalances as $bb) {
+                if ($remainingQty <= 0) break;
+                $deductQty = min((float)$bb->quantity, $remainingQty);
+                $newQty = (float)$bb->quantity - $deductQty;
+                $bb->quantity = $newQty;
+                $bb->save();
+
+                $unitCost = $bb->batch ? (float)$bb->batch->cost_per_unit : ((float)($product?->purchase_cost ?? 0.0));
+
+                $lastMovement = StockMovement::create([
+                    'movement_date' => now(),
+                    'product_id' => $productId,
+                    'warehouse_id' => $warehouseId,
+                    'batch_id' => $bb->batch_id,
+                    'movement_type' => $movementType,
+                    'reference_type' => $referenceType,
+                    'reference_id' => $referenceId,
+                    'quantity' => -$deductQty,
+                    'unit_cost' => $unitCost,
+                    'balance_after' => $newQty,
+                    'notes' => $notes . ($bb->batch ? " (Auto-FIFO Lot {$bb->batch->batch_number})" : ''),
+                    'created_by' => $userId ?? auth()->id(),
+                ]);
+
+                $remainingQty -= $deductQty;
+            }
+
+            // If any quantity remains, deduct from unbatched
+            if ($remainingQty > 0) {
+                if (!$unbatchedBalance) {
+                    $unbatchedBalance = StockBalance::create([
+                        'product_id' => $productId,
+                        'warehouse_id' => $warehouseId,
+                        'batch_id' => null,
+                        'quantity' => 0.0000,
+                        'reserved_quantity' => 0.0000,
+                    ]);
+                    $unbatchedBalance = StockBalance::where('id', $unbatchedBalance->id)->lockForUpdate()->first();
+                }
+
+                $newQty = (float)$unbatchedBalance->quantity - $remainingQty;
+                $unbatchedBalance->quantity = $newQty;
+                $unbatchedBalance->save();
+
+                $unitCost = $product ? (float)$product->purchase_cost : 0.0;
+
+                $lastMovement = StockMovement::create([
+                    'movement_date' => now(),
+                    'product_id' => $productId,
+                    'warehouse_id' => $warehouseId,
+                    'batch_id' => null,
+                    'movement_type' => $movementType,
+                    'reference_type' => $referenceType,
+                    'reference_id' => $referenceId,
+                    'quantity' => -$remainingQty,
+                    'unit_cost' => $unitCost,
+                    'balance_after' => $newQty,
+                    'notes' => $notes,
+                    'created_by' => $userId ?? auth()->id(),
+                ]);
+            }
+
+            return $lastMovement;
         });
     }
 

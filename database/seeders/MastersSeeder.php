@@ -333,5 +333,31 @@ class MastersSeeder extends Seeder
                 notes: 'Acid cleaner lot 02'
             );
         }
+
+        // Also seed finished goods stock in WH-FG (Distribution Warehouse)
+        if ($whFg) {
+            if ($prodDegrease && isset($batchD1)) {
+                $invService->addStock(
+                    productId: $prodDegrease->id,
+                    warehouseId: $whFg->id,
+                    quantity: 60.0,
+                    unitCost: 65.0,
+                    movementType: 'opening_stock',
+                    batchId: $batchD1->id,
+                    notes: 'FG warehouse opening stock'
+                );
+            }
+            if ($prodAcid && isset($batchA1)) {
+                $invService->addStock(
+                    productId: $prodAcid->id,
+                    warehouseId: $whFg->id,
+                    quantity: 40.0,
+                    unitCost: 220.0,
+                    movementType: 'opening_stock',
+                    batchId: $batchA1->id,
+                    notes: 'FG warehouse opening stock'
+                );
+            }
+        }
     }
 }

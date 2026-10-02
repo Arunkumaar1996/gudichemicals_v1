@@ -167,6 +167,39 @@ class ErpUiAndEndpointsTest extends TestCase
         $response->assertJson(['success' => true]);
     }
 
+    public function test_pos_billing_with_auto_fifo_batch_allocation_when_batch_id_is_null(): void
+    {
+        $customer = Customer::walkInCustomer();
+        $product = Product::where('sku', 'FG-ACID-CLEAN-5L')->firstOrFail();
+        $warehouse = Warehouse::where('code', 'WH-MAIN')->firstOrFail();
+        $invService = app(InventoryService::class);
+
+        $initialStock = $invService->getAvailableStock($product->id, $warehouse->id);
+        $this->assertGreaterThanOrEqual(2, $initialStock);
+
+        // Bill 2 cans without specifying batch_id (batch_id is null / Auto-FIFO)
+        $response = $this->actingAs($this->admin)->postJson('/pos/store', [
+            'customer_id' => $customer->id,
+            'warehouse_id' => $warehouse->id,
+            'price_tier' => 'retail',
+            'cart_items' => [
+                [
+                    'product_id' => $product->id,
+                    'quantity' => 2,
+                    'batch_id' => null,
+                ]
+            ],
+            'payment_method' => 'cash',
+            'paid_amount' => 1416.00,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        // Stock must have been deducted by exactly 2 without insufficient stock exception
+        $this->assertEquals($initialStock - 2.0, $invService->getAvailableStock($product->id, $warehouse->id));
+    }
+
     public function test_pos_search_and_barcode_lookup_endpoints(): void
     {
         $product = Product::where('sku', 'FG-DEGREASE-1L')->firstOrFail();

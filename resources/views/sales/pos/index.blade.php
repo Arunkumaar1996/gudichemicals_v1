@@ -17,6 +17,7 @@
 
     <style>
         :root {
+            --pos-base-font-size: 15px; /* Default normal readable font size */
             --pos-primary: #005a9c;
             --pos-primary-dark: #003e6b;
             --pos-secondary: #0d9488;
@@ -36,14 +37,19 @@
             user-select: text !important;
         }
 
-        html, body {
+        html {
+            font-size: var(--pos-base-font-size, 15px);
+            transition: font-size 0.15s ease-in-out;
+        }
+
+        body {
             height: 100vh;
             width: 100vw;
             margin: 0;
             padding: 0;
             overflow: hidden;
             font-family: var(--pos-font);
-            font-size: 13px; /* Compact readable font size */
+            font-size: 1rem; /* Normal readable font size (15px) */
             background-color: #f1f5f9;
             color: #1e293b;
             -webkit-font-smoothing: antialiased;
@@ -57,9 +63,9 @@
             overflow: hidden;
         }
 
-        /* Compact Top Bar */
+        /* Top Bar */
         .pos-top-nav {
-            height: 46px;
+            height: 50px;
             background: linear-gradient(135deg, #091326 0%, #003666 100%);
             color: #ffffff;
             padding: 0 1rem;
@@ -68,22 +74,22 @@
             justify-content: space-between;
             flex-shrink: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         /* Workspace Grid: Full Height */
         .pos-workspace-grid {
             flex-grow: 1;
-            height: calc(100vh - 46px);
+            height: calc(100vh - 50px);
             display: flex;
             padding: 0.5rem;
             gap: 0.5rem;
             overflow: hidden;
         }
 
-        /* Left Side: Product Discovery & Catalog (60% width) */
+        /* Left Side: Product Discovery & Catalog (58% width) */
         .catalog-container {
-            flex: 1 1 60%;
+            flex: 1 1 58%;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -96,16 +102,16 @@
         }
 
         .catalog-search-strip {
-            padding: 0.5rem 0.75rem;
+            padding: 0.6rem 0.85rem;
             border-bottom: 1px solid var(--pos-border);
             background: #ffffff;
             flex-shrink: 0;
         }
 
         .compact-search-input {
-            font-size: 0.88rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            padding: 0.45rem 0.75rem;
+            padding: 0.45rem 0.85rem;
             border-radius: 7px;
             border: 1.5px solid #cbd5e1;
             transition: all 0.15s;
@@ -119,9 +125,9 @@
 
         .category-tab-strip {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.35rem;
             overflow-x: auto;
-            padding: 0.35rem 0.75rem;
+            padding: 0.4rem 0.85rem;
             background: #f8fafc;
             border-bottom: 1px solid var(--pos-border);
             flex-shrink: 0;
@@ -129,9 +135,9 @@
 
         .cat-tab {
             white-space: nowrap;
-            font-size: 0.75rem;
+            font-size: 0.82rem;
             font-weight: 600;
-            padding: 0.25rem 0.7rem;
+            padding: 0.3rem 0.85rem;
             border-radius: 6px;
             border: 1px solid #cbd5e1;
             background: #ffffff;
@@ -149,15 +155,15 @@
         .catalog-scroll-body {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 0.5rem;
+            padding: 0.6rem;
         }
 
-        /* Compact Product Tile */
+        /* Product Tile */
         .compact-product-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1.5px solid #e2e8f0;
             border-radius: 8px;
-            padding: 0.55rem;
+            padding: 0.65rem;
             cursor: pointer;
             height: 100%;
             display: flex;
@@ -169,60 +175,71 @@
 
         .compact-product-card:hover {
             border-color: var(--pos-primary);
-            box-shadow: 0 4px 12px rgba(0, 90, 156, 0.12);
+            box-shadow: 0 4px 14px rgba(0, 90, 156, 0.15);
             transform: translateY(-1px);
         }
 
+        .compact-product-card.out-of-stock {
+            opacity: 0.65;
+            background: #fff8f8;
+            border-color: #fecaca;
+        }
+
+        .compact-product-card.out-of-stock:hover {
+            border-color: #ef4444;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+        }
+
         .compact-product-card .sku-tag {
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #64748b;
         }
 
         .compact-product-card .stock-tag {
-            font-size: 0.65rem;
+            font-size: 0.78rem;
             font-weight: 700;
-            padding: 1px 5px;
+            padding: 2px 7px;
             border-radius: 4px;
         }
 
         .compact-product-card .item-name {
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.92rem;
+            font-weight: 700;
             color: #0f172a;
-            line-height: 1.25;
-            margin: 0.25rem 0;
+            line-height: 1.3;
+            margin: 0.3rem 0;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            height: 2rem;
+            min-height: 2.4rem;
         }
 
         .compact-product-card .batch-count-pill {
-            font-size: 0.62rem;
+            font-size: 0.72rem;
             background: #e0f2fe;
             color: #0369a1;
-            padding: 1px 4px;
-            border-radius: 3px;
-            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
             display: inline-block;
         }
 
         .compact-product-card .price-tag {
             font-family: var(--pos-mono);
-            font-weight: 700;
-            font-size: 0.88rem;
+            font-weight: 800;
+            font-size: 1.05rem;
             color: #059669;
         }
 
-        /* Right Side: Billing Ticket Console (40% width) */
+        /* Right Side: Billing Ticket Console (42% width) */
         .cart-container {
-            flex: 1 1 40%;
+            flex: 1 1 42%;
             display: flex;
             flex-direction: column;
             height: 100%;
-            min-width: 400px;
+            min-width: 420px;
             background: var(--pos-panel-bg);
             border-radius: 10px;
             border: 1px solid var(--pos-border);
@@ -231,7 +248,7 @@
         }
 
         .cart-top-bar {
-            padding: 0.5rem 0.75rem;
+            padding: 0.6rem 0.85rem;
             border-bottom: 1px solid var(--pos-border);
             background: #ffffff;
             flex-shrink: 0;
@@ -241,16 +258,16 @@
             flex-grow: 1;
             overflow-y: auto;
             background: #f8fafc;
-            padding: 0.4rem;
+            padding: 0.5rem;
         }
 
-        /* Compact Cart Item Row */
+        /* Cart Item Row */
         .cart-item-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 7px;
-            padding: 0.5rem 0.65rem;
-            margin-bottom: 0.4rem;
+            border-radius: 8px;
+            padding: 0.6rem 0.75rem;
+            margin-bottom: 0.5rem;
             transition: all 0.15s;
         }
 
@@ -259,14 +276,14 @@
         }
 
         .cart-item-card .card-title-text {
-            font-size: 0.82rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #0f172a;
-            line-height: 1.2;
+            line-height: 1.25;
         }
 
         .batch-selector-pill {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             border-radius: 4px;
@@ -286,10 +303,10 @@
         }
 
         .mini-qty-btn {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             padding: 0;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
@@ -300,20 +317,20 @@
         }
 
         .mini-qty-input {
-            width: 44px;
-            height: 24px;
+            width: 50px;
+            height: 28px;
             text-align: center;
-            font-size: 0.82rem;
+            font-size: 0.92rem;
             font-weight: 700;
             border: 1px solid #cbd5e1;
             border-radius: 5px;
             padding: 0;
-            margin: 0 2px;
+            margin: 0 3px;
         }
 
         .mini-del-btn {
-            width: 22px;
-            height: 22px;
+            width: 26px;
+            height: 26px;
             border-radius: 4px;
             border: 1px solid #fecaca;
             background: #fef2f2;
@@ -322,7 +339,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.78rem;
             transition: all 0.15s;
         }
 
@@ -333,7 +350,7 @@
 
         /* Cart Footer & Calculations */
         .cart-bottom-bar {
-            padding: 0.65rem 0.85rem;
+            padding: 0.75rem 0.95rem;
             background: #ffffff;
             border-top: 1.5px solid var(--pos-border);
             flex-shrink: 0;
@@ -342,7 +359,7 @@
         .compact-total-banner {
             background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
             border-radius: 8px;
-            padding: 0.5rem 0.85rem;
+            padding: 0.6rem 0.95rem;
             color: #ffffff;
             display: flex;
             align-items: center;
@@ -350,51 +367,90 @@
         }
 
         .hotkey-tip {
-            font-size: 0.68rem;
+            font-size: 0.72rem;
             background: #e2e8f0;
             border-radius: 3px;
-            padding: 1px 4px;
+            padding: 1px 5px;
             font-weight: 700;
             color: #334155;
             margin-right: 2px;
+        }
+
+        .font-scaler-btn {
+            color: rgba(255, 255, 255, 0.75);
+            transition: color 0.15s;
+        }
+        .font-scaler-btn:hover {
+            color: #ffffff !important;
+        }
+        .font-scaler-reset:hover {
+            color: #fef08a !important;
         }
     </style>
 </head>
 <body>
 
 <div id="pos-app">
+    <!-- Floating Out-Of-Stock & Notification Toast -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 10500;">
+        <div id="posAlertToast" class="toast align-items-center text-bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-bold py-2.5 px-3" id="posAlertToastMessage" style="font-size: 0.92rem;">
+                    <!-- Alert message -->
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Control Bar -->
     <header class="pos-top-nav">
         <div class="d-flex align-items-center">
-            <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-light py-0.5 px-2 me-2.5 fw-semibold" style="font-size: 0.75rem;">
+            <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-light py-0.5 px-2 me-2.5 fw-semibold" style="font-size: 0.8rem;">
                 <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
             </a>
             <div class="d-flex align-items-center">
-                <i class="fa-solid fa-flask-vial text-warning me-1.5 fs-6"></i>
-                <span class="fw-bold tracking-wide" style="font-size: 0.88rem;">GUDI CHEMICALS</span>
-                <span class="badge bg-secondary bg-opacity-25 ms-2 text-white-50" style="font-size: 0.68rem;">POS Terminal</span>
+                <i class="fa-solid fa-flask-vial text-warning me-1.5 fs-5"></i>
+                <span class="fw-bold tracking-wide" style="font-size: 0.95rem;">GUDI CHEMICALS</span>
+                <span class="badge bg-secondary bg-opacity-25 ms-2 text-white-50" style="font-size: 0.72rem;">POS Workstation</span>
             </div>
         </div>
 
-        <div class="d-flex align-items-center gap-2.5">
-            <div class="d-flex align-items-center text-white-50 small" style="font-size: 0.75rem;">
-                <i class="fa-solid fa-warehouse me-1 text-warning"></i>
-                <select id="posWarehouse" class="form-select form-select-sm py-0 px-1 bg-dark text-white border-secondary" style="font-size: 0.75rem; width: 130px;" onchange="onWarehouseChange()">
+        <div class="d-flex align-items-center gap-2">
+            <!-- Warehouse Selector -->
+            <div class="d-flex align-items-center text-white-50 small" style="font-size: 0.82rem;">
+                <i class="fa-solid fa-warehouse me-1.5 text-warning"></i>
+                <select id="posWarehouse" class="form-select form-select-sm py-0.5 px-2 bg-dark text-white border-secondary fw-semibold" style="font-size: 0.82rem; min-width: 175px;" onchange="onWarehouseChange()">
                     @foreach($warehouses as $w)
                         <option value="{{ $w->id }}">{{ $w->name }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <div class="text-white-50 small d-none d-md-block" style="font-family: var(--pos-mono); font-size: 0.78rem;" id="liveClock">
+            <!-- Live Clock -->
+            <div class="text-white-50 small d-none d-lg-block px-1" style="font-family: var(--pos-mono); font-size: 0.82rem;" id="liveClock">
                 --:--:--
             </div>
 
-            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold" style="font-size: 0.72rem;">
+            <!-- DYNAMIC FONT SIZE ADJUSTER BUTTONS (A- / 100% / A+) -->
+            <div class="d-flex align-items-center bg-black bg-opacity-25 rounded px-2 py-0.5 border border-white border-opacity-15 me-1" title="Adjust Interface Font Size">
+                <span class="text-white-50 me-1 d-none d-xl-inline" style="font-size: 0.75rem;"><i class="fa-solid fa-text-height me-0.5"></i> Text:</span>
+                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none p-0 px-1.5 font-scaler-btn" onclick="adjustFontSize(-1)" title="Decrease Font Size (A-)">
+                    <i class="fa-solid fa-font fa-xs"></i><i class="fa-solid fa-minus fa-2xs ms-0.5"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-link text-warning fw-bold text-decoration-none p-0 px-1 font-scaler-reset" onclick="resetFontSize()" title="Click to Reset Font Size (100% Normal)" style="font-size: 0.82rem; min-width: 44px;">
+                    <span id="lblFontSizePercent">100%</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none p-0 px-1.5 font-scaler-btn" onclick="adjustFontSize(1)" title="Increase Font Size (A+)">
+                    <i class="fa-solid fa-font fa-sm"></i><i class="fa-solid fa-plus fa-2xs ms-0.5"></i>
+                </button>
+            </div>
+
+            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold d-none d-md-inline" style="font-size: 0.78rem;">
                 <i class="fa-solid fa-user me-1"></i> {{ auth()->user()->name }}
             </span>
 
-            <button type="button" class="btn btn-sm btn-outline-light py-0 px-1.5" onclick="toggleFullScreen()" title="Fullscreen" style="font-size: 0.75rem;">
+            <button type="button" class="btn btn-sm btn-outline-light py-0.5 px-2" onclick="toggleFullScreen()" title="Fullscreen" style="font-size: 0.8rem;">
                 <i class="fa-solid fa-expand"></i>
             </button>
         </div>
@@ -441,29 +497,29 @@
                         @endphp
                         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 product-tile-col"
                              onclick="handleProductClick({{ json_encode($p) }})">
-                            <div class="compact-product-card">
+                            <div class="compact-product-card {{ !$inStock ? 'out-of-stock' : '' }}">
                                 <div>
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="stock-tag {{ $inStock ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle' }}">
-                                            {{ number_format($p['stock'], 1) }} {{ $p['unit'] }}
+                                        <span class="stock-tag {{ $inStock ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger text-white fw-bold' }}">
+                                            {{ $inStock ? number_format($p['stock'], 1) . ' ' . $p['unit'] : 'Out of Stock (0)' }}
                                         </span>
                                         <span class="sku-tag">{{ $p['sku'] }}</span>
                                     </div>
                                     <div class="item-name" title="{{ $p['name'] }}">{{ $p['name'] }}</div>
                                     <div class="d-flex align-items-center justify-content-between mt-1">
-                                        <small class="text-muted" style="font-size: 0.68rem;">GST: {{ $p['gst_rate'] }}%</small>
+                                        <small class="text-muted" style="font-size: 0.78rem;">GST: {{ $p['gst_rate'] }}%</small>
                                         @if($batchesCount > 1)
                                             <span class="batch-count-pill" title="Multiple production lots available in warehouse">
                                                 <i class="fa-solid fa-layer-group me-0.5"></i> {{ $batchesCount }} Lots
                                             </span>
                                         @elseif($batchesCount === 1)
-                                            <small class="text-muted" style="font-size: 0.65rem;">Lot: {{ $p['batches'][0]['batch_number'] }}</small>
+                                            <small class="text-muted fw-semibold" style="font-size: 0.75rem;">Lot: {{ $p['batches'][0]['batch_number'] }}</small>
                                         @endif
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between pt-1.5 border-top mt-1.5">
                                     <div class="price-tag">₹{{ number_format($p['retail_price'], 2) }}</div>
-                                    <small class="text-muted" style="font-size: 0.68rem;">WS: ₹{{ number_format($p['wholesale_price'], 2) }}</small>
+                                    <small class="text-muted" style="font-size: 0.78rem;">WS: ₹{{ number_format($p['wholesale_price'], 2) }}</small>
                                 </div>
                             </div>
                         </div>
@@ -826,6 +882,64 @@
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
     });
 
+    // ==========================================
+    // DYNAMIC FONT SIZE ADJUSTMENT ENGINE
+    // ==========================================
+    const fontScalePresets = [
+        { label: '85%', size: '13px' },
+        { label: '100%', size: '15px' }, // Normal Default (readable)
+        { label: '115%', size: '17px' },
+        { label: '130%', size: '19.5px' },
+    ];
+    let currentScaleIdx = 1; // 100% Normal
+
+    function applyFontScale(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= fontScalePresets.length) idx = fontScalePresets.length - 1;
+        currentScaleIdx = idx;
+        const preset = fontScalePresets[currentScaleIdx];
+        document.documentElement.style.setProperty('--pos-base-font-size', preset.size);
+        $('#lblFontSizePercent').text(preset.label);
+        try {
+            localStorage.setItem('pos_font_scale_idx', currentScaleIdx);
+        } catch(e) {}
+    }
+
+    function adjustFontSize(delta) {
+        applyFontScale(currentScaleIdx + delta);
+    }
+
+    function resetFontSize() {
+        applyFontScale(1); // Reset to 100% (15px Normal)
+    }
+
+    // Restore saved font size preference on load
+    try {
+        const savedIdx = localStorage.getItem('pos_font_scale_idx');
+        if (savedIdx !== null && !isNaN(parseInt(savedIdx, 10))) {
+            applyFontScale(parseInt(savedIdx, 10));
+        } else {
+            applyFontScale(1);
+        }
+    } catch(e) {
+        applyFontScale(1);
+    }
+
+    // Friendly Toast Alert
+    function showStockWarningToast(message, isDanger = true) {
+        try {
+            playScanBeep(false);
+            const toastEl = $('#posAlertToast');
+            toastEl.removeClass('text-bg-danger text-bg-warning text-bg-success')
+                   .addClass(isDanger ? 'text-bg-danger' : 'text-bg-warning');
+            $('#posAlertToastMessage').html('<i class="fa-solid fa-triangle-exclamation me-1.5"></i> ' + message);
+            const toast = new bootstrap.Toast(toastEl[0], { delay: 4500 });
+            toast.show();
+        } catch(e) {
+            alert(message);
+        }
+    }
+
     let cart = {}; // cartKey (product_id + '_' + batch_id) -> item
     let lastCalculation = null;
     let searchDebounceTimer = null;
@@ -935,10 +1049,14 @@
     }
 
     function onWarehouseChange() {
+        const whName = $('#posWarehouse option:selected').text();
         fetchProducts($('#barcodeSearch').val().trim(), selectedCategory);
+        if (Object.keys(cart).length > 0) {
+            showStockWarningToast(`Switched active warehouse to: ${whName}. Stock levels and available batches have been updated.`, false);
+        }
     }
 
-    // Render Compact Product Cards
+    // Render Product Cards
     function renderCatalogTiles(items) {
         const grid = $('#catalogGrid');
         grid.empty();
@@ -954,7 +1072,9 @@
 
         items.forEach(p => {
             const inStock = p.stock > 0;
-            const stockClass = inStock ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle';
+            const stockClass = inStock ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger text-white fw-bold';
+            const stockText = inStock ? `${p.stock.toFixed(1)} ${p.unit}` : 'Out of Stock (0)';
+            const cardClass = inStock ? 'compact-product-card' : 'compact-product-card out-of-stock';
             const batchesCount = (p.batches || []).length;
             const jsonStr = JSON.stringify(p).replace(/"/g, '&quot;');
 
@@ -962,28 +1082,28 @@
             if (batchesCount > 1) {
                 batchBadge = `<span class="batch-count-pill"><i class="fa-solid fa-layer-group me-0.5"></i> ${batchesCount} Lots</span>`;
             } else if (batchesCount === 1) {
-                batchBadge = `<small class="text-muted" style="font-size: 0.65rem;">Lot: ${p.batches[0].batch_number}</small>`;
+                batchBadge = `<small class="text-muted fw-semibold" style="font-size: 0.75rem;">Lot: ${p.batches[0].batch_number}</small>`;
             }
 
             const tile = `
                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 product-tile-col" onclick="handleProductClick(${jsonStr})">
-                    <div class="compact-product-card">
+                    <div class="${cardClass}">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="stock-tag ${stockClass}">
-                                    ${p.stock.toFixed(1)} ${p.unit}
+                                    ${stockText}
                                 </span>
                                 <span class="sku-tag">${p.sku}</span>
                             </div>
                             <div class="item-name" title="${p.name}">${p.name}</div>
                             <div class="d-flex align-items-center justify-content-between mt-1">
-                                <small class="text-muted" style="font-size: 0.68rem;">GST: ${p.gst_rate}%</small>
+                                <small class="text-muted" style="font-size: 0.78rem;">GST: ${p.gst_rate}%</small>
                                 ${batchBadge}
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-between pt-1.5 border-top mt-1.5">
                             <div class="price-tag">₹${p.retail_price.toFixed(2)}</div>
-                            <small class="text-muted" style="font-size: 0.68rem;">WS: ₹${p.wholesale_price.toFixed(2)}</small>
+                            <small class="text-muted" style="font-size: 0.78rem;">WS: ₹${p.wholesale_price.toFixed(2)}</small>
                         </div>
                     </div>
                 </div>
@@ -997,6 +1117,13 @@
     // ==========================================
     function handleProductClick(product) {
         if (!product || !product.id) return;
+
+        // Guard against out-of-stock items
+        if (product.stock <= 0) {
+            const whName = $('#posWarehouse option:selected').text();
+            showStockWarningToast(`Out of Stock: "${product.name}" has 0 stock in ${whName}. Please select another warehouse or restock.`);
+            return;
+        }
 
         const batches = product.batches || [];
 
@@ -1193,25 +1320,25 @@
                 });
                 batchHtml = `
                     <div class="mt-1">
-                        <select class="form-select form-select-sm py-0 px-1 border-secondary border-opacity-50 text-dark fw-semibold" style="font-size: 0.68rem;" onchange="switchItemBatch('${item.key}', this.value)">
+                        <select class="form-select form-select-sm py-0.5 px-1.5 border-secondary border-opacity-50 text-dark fw-semibold" style="font-size: 0.8rem;" onchange="switchItemBatch('${item.key}', this.value)">
                             ${options}
                         </select>
                     </div>
                 `;
             } else if (item.batch_number) {
                 batchHtml = `
-                    <div class="text-muted mt-0.5" style="font-size: 0.68rem;">
-                        <i class="fa-solid fa-tag me-0.5 text-secondary"></i> Lot: <strong>${item.batch_number}</strong> ${item.expiry_date ? '(Exp: ' + item.expiry_date + ')' : ''}
+                    <div class="text-muted mt-1" style="font-size: 0.8rem;">
+                        <i class="fa-solid fa-tag me-0.5 text-secondary"></i> Lot: <strong class="text-dark">${item.batch_number}</strong> ${item.expiry_date ? '(Exp: ' + item.expiry_date + ')' : ''}
                     </div>
                 `;
             }
 
             const html = `
                 <div class="cart-item-card" data-key="${item.key}">
-                    <div class="d-flex justify-content-between align-items-start mb-0.5">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
                         <div class="me-2">
                             <span class="card-title-text">${item.name}</span>
-                            <div class="text-muted" style="font-size: 0.68rem;">
+                            <div class="text-muted" style="font-size: 0.8rem;">
                                 ${item.sku} | HSN: ${item.hsn_code} | GST: ${item.gst_rate}%
                             </div>
                             ${batchHtml}
@@ -1220,16 +1347,16 @@
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-1.5 pt-1 border-top border-light">
+                    <div class="d-flex justify-content-between align-items-center mt-1.5 pt-1.5 border-top border-light">
                         <div class="d-flex align-items-center">
                             <button type="button" class="mini-qty-btn" onclick="changeQty('${item.key}', -1)">-</button>
                             <input type="number" step="any" class="mini-qty-input" value="${item.quantity}" onchange="setDirectQty('${item.key}', this.value)">
                             <button type="button" class="mini-qty-btn" onclick="changeQty('${item.key}', 1)">+</button>
-                            <small class="text-muted ms-1" style="font-size: 0.7rem;">${item.unit}</small>
+                            <small class="text-muted ms-1.5 fw-semibold" style="font-size: 0.82rem;">${item.unit}</small>
                         </div>
                         <div class="text-end">
-                            <small class="text-muted me-1.5" style="font-size: 0.7rem;">@ ₹${item.price.toFixed(2)}</small>
-                            <span class="fw-bold text-success" style="font-family: var(--pos-mono); font-size: 0.92rem;">₹${lineTotal.toFixed(2)}</span>
+                            <small class="text-muted me-1.5" style="font-size: 0.82rem;">@ ₹${item.price.toFixed(2)}</small>
+                            <span class="fw-bold text-success" style="font-family: var(--pos-mono); font-size: 1.05rem;">₹${lineTotal.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -1425,7 +1552,14 @@
             error: function(xhr) {
                 btn.prop('disabled', false).html('<i class="fa-solid fa-print me-1"></i> Finalize & Print Bill');
                 const errMsg = xhr.responseJSON?.message || (xhr.responseJSON?.errors ? Object.values(xhr.responseJSON.errors).flat().join('\n') : 'Billing transaction failed.');
-                alert('Billing Error:\n' + errMsg);
+                showStockWarningToast(errMsg, true);
+                // Also show inline notice if payment modal is open
+                $('#modalErrorAlert').remove();
+                $('#paymentModal .modal-body').prepend(`
+                    <div id="modalErrorAlert" class="alert alert-danger py-2 px-3 small mb-2 fw-semibold">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i> ${errMsg}
+                    </div>
+                `);
             }
         });
     }

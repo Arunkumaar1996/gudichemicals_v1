@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gudi Chemicals ERP — User Manual & Operations Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 14mm 18mm 14mm;
+            @bottom-right {
+                content: "Page " counter(page);
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 8.5pt;
+                color: #64748b;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            line-height: 1.55;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+        }
+        .cover-page {
+            page-break-after: always;
+            height: 96vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .cover-header {
+            margin-top: 20px;
+        }
+        .cover-logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        .company-name {
+            font-size: 26pt;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .company-tagline {
+            font-size: 10.5pt;
+            font-weight: 600;
+            color: #005a9c;
+            letter-spacing: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .cover-title-box {
+            background: linear-gradient(135deg, #0f172a 0%, #005a9c 100%);
+            color: #ffffff;
+            padding: 35px 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 10px 25px rgba(15,23,42,0.25);
+        }
+        .cover-doc-type {
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .cover-title {
+            font-size: 22pt;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            line-height: 1.3;
+        }
+        .cover-subtitle {
+            font-size: 12pt;
+            font-weight: 300;
+            color: #e2e8f0;
+            margin: 0;
+        }
+        .cover-footer {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 15px;
+            font-size: 9pt;
+            color: #475569;
+            text-align: left;
+        }
+        .cover-footer table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cover-footer td {
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        h1 {
+            font-size: 17pt;
+            color: #003e6b;
+            border-bottom: 2px solid #005a9c;
+            padding-bottom: 5px;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 13pt;
+            color: #0f172a;
+            border-left: 4px solid #005a9c;
+            padding-left: 8px;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        h3 {
+            font-size: 11pt;
+            color: #1e293b;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        p, li {
+            text-align: justify;
+            margin-bottom: 6px;
+        }
+        ul, ol {
+            margin-top: 3px;
+            margin-bottom: 10px;
+            padding-left: 22px;
+        }
+        li {
+            margin-bottom: 3px;
+        }
+        
+        /* Step Boxes */
+        .step-container {
+            border-left: 3px solid #005a9c;
+            padding-left: 12px;
+            margin: 12px 0;
+        }
+        .step-number {
+            font-weight: 700;
+            color: #005a9c;
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Tables */
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 9pt;
+        }
+        table.data-table th, table.data-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        table.data-table th {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        table.data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        /* Callouts / Highlights */
+        .callout-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #16a34a;
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 9pt;
+        }
+        .callout-box.important {
+            background-color: #eff6ff;
+            border-left-color: #2563eb;
+        }
+        .callout-box.warning {
+            background-color: #fefce8;
+            border-left-color: #ca8a04;
+        }
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Screenshot Cards */
+        .screenshot-container {
+            margin: 14px 0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+        .screenshot-img {
+            max-width: 95%;
+            height: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        .screenshot-caption {
+            font-size: 8.5pt;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 7.5pt;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-primary { background: #dbeafe; color: #1e40af; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 6px;
+            margin-bottom: 14px;
+            font-size: 8pt;
+            color: #64748b;
+        }
+        .header-bar strong {
+            color: #0f172a;
+        }
+        
+        kbd {
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+            color: #0f172a;
+            display: inline-block;
+            font-size: 8pt;
+            font-weight: 700;
+            line-height: 1;
+            padding: 2px 5px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COVER PAGE -->
+    <div class="cover-page">
+        <div class="cover-header">
+            __LOGO_IMG__
+            <h1 class="company-name">ARUN CODEX</h1>
+            <div class="company-tagline">Web Developer | Designer | Innovator</div>
+        </div>
+
+        <div class="cover-title-box">
+            <div class="cover-doc-type">Comprehensive User & Training Manual</div>
+            <div class="cover-title">GUDI CHEMICALS ERP USER MANUAL</div>
+            <div class="cover-subtitle">Complete Step-by-Step Operations Guide with Exhaustive Billing Masterclass</div>
+        </div>
+
+        <div class="cover-footer">
+            <table>
+                <tr>
+                    <td style="width: 25%;"><strong>System:</strong></td>
+                    <td style="width: 35%;">Gudi Chemicals ERP (Release 1.0)</td>
+                    <td style="width: 20%;"><strong>Prepared By:</strong></td>
+                    <td style="width: 20%;"><strong>ARUN CODEX</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Document Type:</strong></td>
+                    <td>Official User Manual & Training Guide</td>
+                    <td><strong>Author Role:</strong></td>
+                    <td>Web Developer | Designer | Innovator</td>
+                </tr>
+                <tr>
+                    <td><strong>Target Audience:</strong></td>
+                    <td>Cashiers, Billing Clerks, Managers, Chemists</td>
+                    <td><strong>Language:</strong></td>
+                    <td>Simple, Lucid & Practical English</td>
+                </tr>
+                <tr>
+                    <td><strong>Core Focus:</strong></td>
+                    <td>High-Speed POS & Invoicing Masterclass</td>
+                    <td><strong>Publication Date:</strong></td>
+                    <td>October 2026</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- WELCOME & QUICK START -->
+    <div class="page-break">
+        <div class="header-bar">
+            <span><strong>ARUN CODEX</strong> — Web Developer | Designer | Innovator</span>
+            <span>Gudi Chemicals ERP — User Manual</span>
+        </div>
+
+        <h1>Welcome to Gudi Chemicals ERP</h1>
+        <p>
+            Welcome to the official <strong>Gudi Chemicals ERP User Manual</strong>, authored and designed by <strong>ARUN CODEX</strong>. This guide is written in clear, simple English to provide every team member — from counter cashiers and warehouse storekeepers to plant chemists and accountants — a clear, step-by-step walkthrough of daily operations.
+        </p>
+
+        <div class="callout-box important">
+            <div class="callout-title">Special Emphasis on Billing</div>
+            Because counter checkout speed and 100% tax accuracy are vital to daily commercial success, <strong>Chapter 2</strong> is dedicated entirely to the <strong>Billing & POS Module</strong>. It covers barcode scanning, Retail vs Wholesale pricing, split payments, printing thermal slips vs standard A4 tax invoices, and processing returns.
+        </div>
+
+        <h2>Chapter 1: Getting Started & Navigation</h2>
+
+        <h3>1.1 Logging In to the ERP</h3>
+        <div class="step-container">
+            <div class="step-number">Step 1: Open Your Browser</div>
+            <p>Launch Google Chrome, Microsoft Edge, or Mozilla Firefox. Navigate to your local server address (e.g., <code>http://127.0.0.1:8000/login</code> or your plant's internal IP address).</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 2: Enter Your Credentials</div>
+            <p>Enter your assigned corporate email address and password. For default testing or administrator access:</p>
+            <ul>
+                <li><strong>Admin Email:</strong> <code>admin@gudichemicals.com</code> (Password: <code>Admin@12345</code>)</li>
+                <li><strong>Cashier Email:</strong> <code>cashier@gudichemicals.com</code> (Password: <code>Cashier@12345</code>)</li>
+            </ul>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 3: Click "Sign In to ERP"</div>
+            <p>You will be securely authenticated and redirected immediately to your role-based dashboard.</p>
+        </div>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_01__
+            <div class="screenshot-caption">Figure 1.1: Gudi Chemicals ERP Secure Login Screen with Branding and Role Access</div>
+        </div>
+
+        <h3>1.2 Understanding the Dashboard</h3>
+        <p>
+            The Executive Dashboard displays a real-time operational pulse of your chemical enterprise:
+        </p>
+        <ul>
+            <li><strong>Today's Sales Revenue:</strong> Real-time counter collections and wholesale dispatch billings.</li>
+            <li><strong>Active Batches in Production:</strong> Live count of chemical vats currently being mixed or pending QC release.</li>
+            <li><strong>Low Stock Alerts:</strong> Instant warning cards alerting storekeepers to reorder raw chemicals or plastic containers before stocks deplete.</li>
+            <li><strong>Quick Action Shortcuts:</strong> One-click navigation to Open POS Desk, Create Production Order, or Record New Purchase.</li>
+        </ul>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_02__
+            <div class="screenshot-caption">Figure 1.2: Central Operational Dashboard with Financial, Stock, and Production Metrics</div>
+        </div>
+    </div>
+
+    <!-- CHAPTER 2: BILLING MODULE MASTERCLASS -->
+    <div class="page-break">
+        <div class="header-bar">
+            <span><strong>ARUN CODEX</strong> — Web Developer | Designer | Innovator</span>
+            <span>Gudi Chemicals ERP — User Manual</span>
+        </div>
+
+        <h1>Chapter 2: High-Speed POS & Billing Masterclass <span class="badge badge-warning">PRIMARY CORE MODULE</span></h1>
+        <p>
+            The Billing Desk is where customers are served and revenue is recorded. Gudi Chemicals ERP provides a blazing-fast, single-screen Point of Sale interface designed to handle long customer queues effortlessly.
+        </p>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_03__
+            <div class="screenshot-caption">Figure 2.1: The POS Fast Billing Screen — Product Grid (Left) and Active Cart & Summary (Right)</div>
+        </div>
+
+        <h2>2.1 Anatomy of the Billing Screen</h2>
+        <p>
+            The billing desk is divided into intuitive, high-visibility sections:
+        </p>
+        <ol>
+            <li><strong>Top Control Bar:</strong> Displays active Warehouse location selector, Customer selector dropdown, Quick Add Customer button (<code>+</code>), and Price Tier toggle (Retail / Wholesale).</li>
+            <li><strong>Product Search & Barcode Input:</strong> Search box with keyboard shortcut <kbd>F2</kbd>. Instantly searches across 4,000+ chemical items or accepts hardware barcode scanner scans.</li>
+            <li><strong>Product Catalog Grid:</strong> Visual grid showing fast-moving packaged chemicals with real-time stock badges and quick-add buttons.</li>
+            <li><strong>Active Order Cart:</strong> Displays added line items, unit prices, quantity modifiers (<code>+</code>/<code>-</code>), discount boxes, HSN codes, and line totals.</li>
+            <li><strong>Real-Time Tax & Total Box:</strong> Displays Subtotal, Discount, Taxable Value, CGST/SGST (Intra-state) or IGST (Inter-state), Round-off amount, and Grand Total.</li>
+            <li><strong>Action Buttons:</strong> Clear Cart (<kbd>Esc</kbd>) and <strong>Pay & Generate Invoice (<kbd>F8</kbd>)</strong>.</li>
+        </ol>
+
+        <h2>2.2 Keyboard Shortcuts for Ultra-Fast Billing</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Keyboard Key</th>
+                    <th>Action</th>
+                    <th>How to Use in Real Counter Work</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><kbd>F2</kbd> or <kbd>Ctrl + K</kbd></td>
+                    <td>Search Item</td>
+                    <td>Press to immediately focus cursor into the product search bar without touching the mouse.</td>
+                </tr>
+                <tr>
+                    <td><kbd>F4</kbd></td>
+                    <td>Select Customer</td>
+                    <td>Press to open the customer dropdown to switch from Walk-in to a B2B client.</td>
+                </tr>
+                <tr>
+                    <td><kbd>F7</kbd></td>
+                    <td>Toggle Price Tier</td>
+                    <td>Press to toggle between Retail Selling Price (RSP) and Wholesale Selling Price (WSP).</td>
+                </tr>
+                <tr>
+                    <td><kbd>F8</kbd></td>
+                    <td>Checkout / Pay</td>
+                    <td>Press to open the payment modal to collect cash, UPI, or card.</td>
+                </tr>
+                <tr>
+                    <td><kbd>Esc</kbd></td>
+                    <td>Close / Clear</td>
+                    <td>Press to dismiss open payment dialogs or clear the active search filter.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2.3 Walk-in Retail Billing (Step-by-Step)</h2>
+        <div class="step-container">
+            <div class="step-number">Step 1: Select or Scan Products</div>
+            <p>
+                - Point your USB barcode scanner at the product container barcode (e.g., Industrial Degreaser 1L bottle). The item immediately jumps into the cart with quantity 1.<br>
+                - Alternatively, press <kbd>F2</kbd> and type the first 3 letters of the product (e.g., <code>deg</code>), then click the product card or press Enter.
+            </p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 2: Adjust Quantity</div>
+            <p>
+                Use the <code>+</code> or <code>-</code> buttons in the cart row, or click directly into the quantity box to type a number (e.g., <code>5</code>). The server immediately updates the line subtotal and tax amounts.
+            </p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 3: Review Customer & Price Tier</div>
+            <p>
+                For regular counter retail sales, leave the customer as <strong>"Walk-in Customer"</strong> and the tier as <strong>"Retail"</strong>.
+            </p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 4: Press F8 (Pay & Checkout)</div>
+            <p>
+                The payment modal appears. If the customer hands you ₹1,000 cash for an ₹885 bill:
+                <br>• Enter <code>1000</code> in the Cash Tendered box.
+                <br>• The screen displays: <strong>Change Due: ₹115.00</strong>.
+            </p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 5: Click "Complete & Print Invoice"</div>
+            <p>
+                The transaction is committed atomically. Physical inventory is deducted immediately, and the thermal receipt or A4 tax invoice prints automatically!
+            </p>
+        </div>
+    </div>
+
+    <!-- CHAPTER 2 CONTINUED: B2B, GST, PRINTING -->
+    <div class="page-break">
+        <div class="header-bar">
+            <span><strong>ARUN CODEX</strong> — Web Developer | Designer | Innovator</span>
+            <span>Gudi Chemicals ERP — User Manual</span>
+        </div>
+
+        <h2>2.4 B2B Wholesale Billing (Step-by-Step)</h2>
+        <p>
+            When billing corporate clients, chemical factories, or regional distributors, follow this professional workflow:
+        </p>
+        <div class="step-container">
+            <div class="step-number">Step 1: Select the Registered B2B Customer</div>
+            <p>Press <kbd>F4</kbd> and select the customer (e.g., <em>Apex Chemical Industries Ltd</em>). The system automatically displays their registered GSTIN, State Code, and available Credit Limit.</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 2: Automatic Wholesale Pricing (WSP)</div>
+            <p>The system automatically switches the price tier to <strong>Wholesale (WSP)</strong>. Notice that unit prices adjust to discounted bulk wholesale rates!</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 3: Add Bulk Packaging Items</div>
+            <p>Select 20L Jerry Cans or 200L Drums. Add the requested drum quantities (e.g., 10 Drums).</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 4: Multi-Mode Split Payment or Account Credit</div>
+            <p>In the payment modal (<kbd>F8</kbd>), you can split the settlement:
+                <br>• <strong>Bank Transfer / NEFT:</strong> Enter ₹50,000 against company bank account.
+                <br>• <strong>Customer Credit:</strong> Post the remaining balance (e.g., ₹25,000) to their ledger (Net 30 Days payment terms).
+            </p>
+        </div>
+
+        <h2>2.5 Understanding GST on Your Invoices (Simple English)</h2>
+        <p>
+            Indian GST operates under two simple location rules that Gudi Chemicals ERP calculates automatically:
+        </p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Where is Customer Located?</th>
+                    <th style="width: 25%;">Tax Category Applied</th>
+                    <th>How It Is Split & Shown on Invoice</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Within Maharashtra</strong><br>(Customer State Code 27)</td>
+                    <td><strong>Intra-State GST</strong><br>(CGST + SGST)</td>
+                    <td>If item tax rate is 18%, it splits exactly in half:<br>• <strong>9% Central GST (CGST)</strong><br>• <strong>9% State GST (SGST)</strong><br>• Integrated GST (IGST) is ₹0.00.</td>
+                </tr>
+                <tr>
+                    <td><strong>Outside Maharashtra</strong><br>(e.g., Gujarat - Code 24, Karnataka - Code 29)</td>
+                    <td><strong>Inter-State GST</strong><br>(IGST)</td>
+                    <td>The full tax is assigned to <strong>Integrated GST (IGST)</strong>:<br>• <strong>18% IGST</strong><br>• CGST and SGST are ₹0.00.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2.6 Dual Print Formats: Thermal vs A4 Tax Invoice</h2>
+        <p>
+            Depending on customer requirements, choose the right format from the Invoices screen:
+        </p>
+        <ul>
+            <li><strong>Thermal Slip (80mm):</strong> Click <em>"Print Thermal"</em>. Ideal for cash sales, small vans, and retail customers. Quick, uses zero ink, and saves paper!</li>
+            <li><strong>Standard A4 GST Tax Invoice:</strong> Click <em>"Print A4"</em>. Essential for commercial transport vehicles, B2B tax credit input (ITC), and corporate accounts. Includes full seller/buyer GSTIN addresses, HSN tax summary, bank RTGS details, and authorized signature.</li>
+        </ul>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_06__
+            <div class="screenshot-caption">Figure 2.2: Standard A4 GST Tax Invoice Print Preview with Complete HSN Tax Distribution</div>
+        </div>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_04__
+            <div class="screenshot-caption">Figure 2.3: Invoices Register with Quick Actions (View, Print Thermal, Print A4, Download PDF)</div>
+        </div>
+    </div>
+
+    <!-- CHAPTER 3 & 4: MASTERS & INVENTORY -->
+    <div class="page-break">
+        <div class="header-bar">
+            <span><strong>ARUN CODEX</strong> — Web Developer | Designer | Innovator</span>
+            <span>Gudi Chemicals ERP — User Manual</span>
+        </div>
+
+        <h1>Chapter 3: Master Data Operations</h1>
+        
+        <h2>3.1 Adding a New Chemical Product</h2>
+        <p>To register a new raw chemical, packaging item, or finished bottled product:</p>
+        <ol>
+            <li>Go to <strong>Masters &rarr; Products</strong> in the left sidebar. Click <strong>"+ Add New Product"</strong>.</li>
+            <li><strong>Item Details:</strong> Enter Item Name (e.g., <em>Industrial Heavy-Duty Degreaser</em>), SKU (e.g., <code>FG-DEGREASE-5L</code>), and Barcode.</li>
+            <li><strong>Item Classification:</strong> Select whether it is <code>raw_material</code>, <code>semi_finished</code>, <code>finished_goods</code>, or <code>packaging</code>.</li>
+            <li><strong>Pricing Tiers:</strong>
+                <ul>
+                    <li><strong>Cost Price (₹):</strong> Factory manufacturing cost or purchase price.</li>
+                    <li><strong>Retail Price (₹):</strong> Selling price for walk-in retail counter buyers.</li>
+                    <li><strong>Wholesale Price (₹):</strong> Discounted bulk price for B2B distributors.</li>
+                    <li><strong>Min Selling Price (₹):</strong> Safety price floor below which no cashier can sell.</li>
+                </ul>
+            </li>
+            <li><strong>Tax & HSN:</strong> Enter the 4-digit or 8-digit HSN code (e.g., <code>3402</code>) and GST rate (<code>18%</code>).</li>
+            <li>Click <strong>"Save Product"</strong>. The item is instantly available in the POS billing catalog!</li>
+        </ol>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_07__
+            <div class="screenshot-caption">Figure 3.1: Products Master Catalog with SKU, Category, Dual Pricing, and Stock Status</div>
+        </div>
+
+        <h1>Chapter 4: Inventory & Warehouse Management</h1>
+
+        <h2>4.1 Entering Opening Stock</h2>
+        <p>When starting operations or conducting initial stock audits, record opening balances via <strong>Inventory &rarr; Opening Stock</strong>. Specify the product, warehouse location, quantity, unit cost, and lot number.</p>
+
+        <h2>4.2 Reading the Stock Ledger & Traceability</h2>
+        <p>
+            Under <strong>Inventory &rarr; Stock Ledger</strong>, every transaction is audited. You can see precisely who deducted or added stock, the exact timestamp, the linked Invoice or GRN document number, and the resulting balance after movement.
+        </p>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_08__
+            <div class="screenshot-caption">Figure 4.1: Real-Time Multi-Tier Inventory Status and Batch Valuation Screen</div>
+        </div>
+    </div>
+
+    <!-- CHAPTER 5 & 6: PRODUCTION & PURCHASING -->
+    <div class="page-break">
+        <div class="header-bar">
+            <span><strong>ARUN CODEX</strong> — Web Developer | Designer | Innovator</span>
+            <span>Gudi Chemicals ERP — User Manual</span>
+        </div>
+
+        <h1>Chapter 5: Chemical Manufacturing & BOM Guide</h1>
+
+        <h2>5.1 Creating a Bill of Materials (Master Formula)</h2>
+        <p>A Bill of Materials (BOM) is your chemical recipe. Navigate to <strong>Production &rarr; Formulas &rarr; Create</strong>:</p>
+        <ol>
+            <li><strong>Header:</strong> Give the recipe a name (e.g., <em>Standard Alkaline Cleaner v1</em>) and base output batch size (e.g., 1,000 Liters).</li>
+            <li><strong>Expected Yield & Process Loss:</strong> Enter standard yield (e.g., 98%) and allowed evaporation loss (2%).</li>
+            <li><strong>Add Ingredients:</strong> Specify the exact quantity of each raw ingredient per 1,000L (e.g., 850L DM Water, 100L Caustic Soda Flakes, 50L Surfactant).</li>
+            <li>Click <strong>"Save Formula"</strong>.</li>
+        </ol>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_09__
+            <div class="screenshot-caption">Figure 5.1: Master Chemical Recipes & Bill of Materials (BOM) Management</div>
+        </div>
+
+        <h2>5.2 Running a Production Order & Quality Control (QC)</h2>
+        <div class="step-container">
+            <div class="step-number">Step 1: Create Production Order</div>
+            <p>Select the master formula and enter your planned batch output (e.g., 2,500 Liters). The system automatically multiplies ingredient requirements by 2.5!</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 2: Mixing & In-Process State</div>
+            <p>Mark order as <em>"In Production"</em>. Operators consume raw ingredients from active warehouse lots.</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 3: Laboratory Quality Control (QC)</div>
+            <p>Plant chemist enters laboratory test measurements: pH level, Specific Gravity, and Viscosity. If parameters pass, mark status as <em>"QC Passed"</em>.</p>
+        </div>
+        <div class="step-container">
+            <div class="step-number">Step 4: Finalize Batch</div>
+            <p>Click <strong>"Finalize Production Order"</strong>. In one single click, raw chemical stock is deducted, finished chemical inventory is credited, and cost per liter is recorded!</p>
+        </div>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_10__
+            <div class="screenshot-caption">Figure 5.2: Production Orders Desk showing Batch Lifecycle and QC Verification</div>
+        </div>
+
+        <h1>Chapter 6: Purchasing & Goods Receipt (GRN)</h1>
+        <p>
+            When raw chemicals arrive at the plant gate:
+        </p>
+        <ol>
+            <li>Navigate to <strong>Purchases &rarr; Goods Receipt (GRN) &rarr; Create</strong>.</li>
+            <li>Select the Vendor and reference Purchase Order.</li>
+            <li>Enter received quantities, supplier lot number, manufacturing date, and expiry date.</li>
+            <li>Click <strong>"Post Goods Receipt"</strong>. Stock increments immediately in warehouse inventory!</li>
+        </ol>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_11__
+            <div class="screenshot-caption">Figure 6.1: Purchasing and Goods Receipt (GRN) Processing Desk</div>
+        </div>
+    </div>
+
+    <!-- CHAPTER 7, 8, 9, 10: EXPENSES, REPORTS, TROUBLESHOOTING -->
+    <div class="page-break">
+        <div class="header-bar">
+            <span><strong>ARUN CODEX</strong> — Web Developer | Designer | Innovator</span>
+            <span>Gudi Chemicals ERP — User Manual</span>
+        </div>
+
+        <h1>Chapter 7: Expenses & Financial Ledgers</h1>
+        <p>
+            To monitor plant operating costs, log overheads under <strong>Finance &rarr; Expenses &rarr; Add Expense</strong>. Select category (Electricity, Boiler Fuel, Freight, Plant Labor), enter amount, and upload voucher bill.
+        </p>
+
+        <h1>Chapter 8: Reports & Statutory Tax Analytics</h1>
+        <p>
+            Generate management reports under the <strong>Reports</strong> menu:
+        </p>
+        <ul>
+            <li><strong>Sales Report:</strong> Filter by date range, cashier, or customer type to view total turnover, cash collected, and outstanding receivables.</li>
+            <li><strong>GSTR-1 Tax Summary:</strong> Generates outward supply totals grouped by HSN code and CGST/SGST/IGST breakdown for monthly GST return filing.</li>
+            <li><strong>Inventory Valuation:</strong> Displays current financial value of all raw materials, intermediates, packaging, and finished stock.</li>
+        </ul>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_13__
+            <div class="screenshot-caption">Figure 8.1: Sales & GST Analytics Report with Date Filtering and Excel Export</div>
+        </div>
+
+        <h1>Chapter 9: System Settings & User Roles</h1>
+        <p>
+            Administrators can configure company tax credentials, thermal receipt header messages, bank RTGS details, and staff user logins under <strong>Settings</strong>.
+        </p>
+
+        <div class="screenshot-container">
+            __SCREENSHOT_14__
+            <div class="screenshot-caption">Figure 9.1: System Configuration, Company Profile, and Printer Margins</div>
+        </div>
+
+        <h1>Chapter 10: Troubleshooting & Quick FAQ</h1>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Issue Encountered</th>
+                    <th style="width: 35%;">Probable Cause</th>
+                    <th>How to Resolve</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>"Insufficient Stock" error when adding to cart</strong></td>
+                    <td>Available warehouse quantity is lower than cart requested units.</td>
+                    <td>Check stock balance under Inventory. Perform a GRN or production finalization to increase sellable stock.</td>
+                </tr>
+                <tr>
+                    <td><strong>Barcode scanner does not add item</strong></td>
+                    <td>Scanner USB cable loose or barcode not registered in Product Master.</td>
+                    <td>Test scanner in Notepad. If code types properly, ensure the barcode is linked to the product under Masters &rarr; Products.</td>
+                </tr>
+                <tr>
+                    <td><strong>Thermal slip prints blank or illegible</strong></td>
+                    <td>Thermal roll inserted upside down or print head dirty.</td>
+                    <td>Flip paper roll so heat-sensitive coated side faces printer head. Clean head with isopropyl alcohol swab.</td>
+                </tr>
+                <tr>
+                    <td><strong>Wrong tax split on B2B invoice</strong></td>
+                    <td>Customer State Code is set incorrectly.</td>
+                    <td>Edit customer profile under Masters &rarr; Customers. Ensure State is set to Maharashtra for CGST/SGST or other state for IGST.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Technical Support & Maintenance</h2>
+        <p>
+            For ongoing software enhancements, custom chemical formula modules, or technical support, please contact the developer:
+        </p>
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px 18px; margin-top: 10px;">
+            <p style="margin: 0; font-weight: 800; font-size: 12pt; color: #005a9c;">ARUN CODEX</p>
+            <p style="margin: 2px 0; font-weight: 600; color: #0f172a;">WEB DEVELOPER | DESIGNER | INNOVATOR</p>
+            <p style="margin: 2px 0; font-size: 9pt; color: #64748b;">Enterprise Web Applications | Chemical ERP Solutions | UI/UX Design</p>
+            <p style="margin: 6px 0 0 0; font-size: 9pt; color: #334155;"><em>"Innovating high-speed digital workflows for modern manufacturing."</em></p>
+        </div>
+    </div>
+
+</body>
+</html>
