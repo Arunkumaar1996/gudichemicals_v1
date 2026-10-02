@@ -32,11 +32,14 @@
         <p class="text-muted small mb-0">Audit sales receipt disbursements across Cash, UPI QR, Credit Card, and Bank Transfers.</p>
     </div>
     <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{{ route('reports.collections', array_merge(request()->all(), ['export' => 'pdf'])) }}" class="btn btn-outline-danger">
+            <i class="fa-solid fa-file-pdf me-1.5"></i> Download PDF
+        </a>
         <a href="{{ route('reports.collections', array_merge(request()->all(), ['export' => 'csv'])) }}" class="btn btn-outline-success">
             <i class="fa-solid fa-file-excel me-1.5"></i> Export Collections CSV
         </a>
         <button onclick="window.print()" class="btn btn-outline-secondary">
-            <i class="fa-solid fa-print me-1.5"></i> Print / PDF
+            <i class="fa-solid fa-print me-1.5"></i> Print
         </button>
     </div>
 </div>

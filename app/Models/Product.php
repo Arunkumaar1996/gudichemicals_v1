@@ -62,6 +62,10 @@ class Product extends Model
 
     public function isLowStock(): bool
     {
-        return $this->total_stock <= (float) $this->reorder_level;
+        $reorder = (float) $this->reorder_level;
+        if ($reorder <= 0) {
+            return false;
+        }
+        return $this->total_stock <= $reorder;
     }
 }

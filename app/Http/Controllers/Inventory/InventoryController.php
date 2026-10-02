@@ -46,11 +46,46 @@ class InventoryController extends Controller
             $query->where('item_type', $request->item_type);
         }
 
+        // Low stock filter (items with reorder_level > 0 and stock <= reorder_level)
+        if ($request->boolean('low_stock')) {
+            $query->where('reorder_level', '>', 0)
+                  ->whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM stock_balances WHERE stock_balances.product_id = products.id) <= products.reorder_level');
+        }
+
+        $lowStockCount = Product::where('is_active', true)
+            ->where('reorder_level', '>', 0)
+            ->whereRaw('(SELECT COALESCE(SUM(quantity), 0) FROM stock_balances WHERE stock_balances.product_id = products.id) <= products.reorder_level')
+            ->count();
+
         $products = $query->orderBy('name')->paginate(20)->withQueryString();
         $warehouses = Warehouse::where('is_active', true)->get();
         $categories = ProductCategory::where('is_active', true)->get();
 
-        return view('inventory.index', compact('products', 'warehouses', 'categories'));
+        return view('inventory.index', compact('products', 'warehouses', 'categories', 'lowStockCount'));
+    }
+
+    /**
+     * Quick update for product low stock reorder threshold.
+     */
+    public function updateReorderLevel(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'reorder_level' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $product->update([
+            'reorder_level' => $validated['reorder_level'],
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Low stock threshold for {$product->name} updated to {$product->reorder_level} {$product->unit?->code}.",
+                'reorder_level' => (float)$product->reorder_level,
+            ]);
+        }
+
+        return back()->with('success', "Low stock threshold for {$product->name} updated to {$product->reorder_level} {$product->unit?->code}.");
     }
 
     public function ledger(Request $request)

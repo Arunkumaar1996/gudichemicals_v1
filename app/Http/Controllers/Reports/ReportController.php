@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
+use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductionOrder;
@@ -10,6 +11,7 @@ use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
 use App\Models\SalesPayment;
 use App\Models\Vendor;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -17,7 +19,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ReportController extends Controller
 {
     /**
-     * Sales Register with Excel/CSV & Print options
+     * Sales Register with Excel/CSV & DomPDF options
      */
     public function sales(Request $request)
     {
@@ -51,6 +53,14 @@ class ReportController extends Controller
             ->groupBy('payment_method')
             ->pluck('total', 'payment_method')
             ->toArray();
+
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $pdf = Pdf::loadView('reports.pdf.sales', compact('invoices', 'summary', 'collections', 'fromDate', 'toDate', 'company'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download("sales_register_{$fromDate}_to_{$toDate}.pdf");
+        }
 
         return view('reports.sales', compact('invoices', 'summary', 'collections', 'fromDate', 'toDate'));
     }
@@ -93,6 +103,14 @@ class ReportController extends Controller
             return $this->exportGstCsv($invoices, $hsnSummary, $fromDate, $toDate);
         }
 
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $pdf = Pdf::loadView('reports.pdf.gst', compact('invoices', 'b2bInvoices', 'b2cInvoices', 'hsnSummary', 'fromDate', 'toDate', 'company'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download("gstr1_summary_{$fromDate}_to_{$toDate}.pdf");
+        }
+
         return view('reports.gst', compact('invoices', 'b2bInvoices', 'b2cInvoices', 'hsnSummary', 'fromDate', 'toDate'));
     }
 
@@ -122,6 +140,14 @@ class ReportController extends Controller
         }
 
         $totalReceivable = $customers->sum('outstanding');
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $pdf = Pdf::loadView('reports.pdf.receivables', compact('customers', 'totalReceivable', 'company'))
+                ->setPaper('a4', 'portrait');
+            return $pdf->download('customer_receivables_' . date('Y-m-d') . '.pdf');
+        }
+
         return view('reports.receivables', compact('customers', 'totalReceivable'));
     }
 
@@ -150,6 +176,14 @@ class ReportController extends Controller
         }
 
         $totalPayable = $vendors->sum('outstanding');
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $pdf = Pdf::loadView('reports.pdf.payables', compact('vendors', 'totalPayable', 'company'))
+                ->setPaper('a4', 'portrait');
+            return $pdf->download('vendor_payables_' . date('Y-m-d') . '.pdf');
+        }
+
         return view('reports.payables', compact('vendors', 'totalPayable'));
     }
 
@@ -170,6 +204,14 @@ class ReportController extends Controller
 
         if ($request->get('export') === 'csv') {
             return $this->exportCollectionsCsv($payments, $fromDate, $toDate);
+        }
+
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $pdf = Pdf::loadView('reports.pdf.collections', compact('payments', 'byMode', 'fromDate', 'toDate', 'company'))
+                ->setPaper('a4', 'portrait');
+            return $pdf->download("daily_collections_{$fromDate}_to_{$toDate}.pdf");
         }
 
         return view('reports.collections', compact('payments', 'byMode', 'fromDate', 'toDate'));
@@ -193,6 +235,14 @@ class ReportController extends Controller
             return $this->exportInventoryCsv($products);
         }
 
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $pdf = Pdf::loadView('reports.pdf.inventory', compact('products', 'totalValuation', 'company'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('inventory_valuation_' . date('Y-m-d') . '.pdf');
+        }
+
         return view('reports.inventory', compact('products', 'totalValuation'));
     }
 
@@ -207,6 +257,18 @@ class ReportController extends Controller
 
         if ($request->get('export') === 'csv') {
             return $this->exportProductionCsv(ProductionOrder::with(['outputProduct.unit', 'formula', 'operator'])->latest('order_date')->get());
+        }
+
+        $company = CompanySetting::current();
+
+        if ($request->get('export') === 'pdf') {
+            $allBatches = ProductionOrder::with(['outputProduct.unit', 'formula', 'operator'])
+                ->latest('order_date')
+                ->get();
+
+            $pdf = Pdf::loadView('reports.pdf.production', ['batches' => $allBatches, 'company' => $company])
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('production_yield_' . date('Y-m-d') . '.pdf');
         }
 
         return view('reports.production', compact('batches'));

@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/ledger', [InventoryController::class, 'ledger'])->name('ledger');
         Route::get('/opening-stock', [InventoryController::class, 'createOpeningStock'])->name('opening_stock');
         Route::post('/opening-stock', [InventoryController::class, 'storeOpeningStock'])->name('opening_stock.store');
+        Route::post('/{product}/reorder-level', [InventoryController::class, 'updateReorderLevel'])->name('reorder_level.update');
 
         Route::prefix('adjustments')->name('adjustments.')->group(function () {
             Route::get('/', [StockAdjustmentController::class, 'index'])->name('index');

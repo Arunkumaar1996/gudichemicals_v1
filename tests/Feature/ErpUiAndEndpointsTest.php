@@ -341,4 +341,62 @@ class ErpUiAndEndpointsTest extends TestCase
         $storeResponse->assertRedirect();
         $this->assertDatabaseHas('users', ['email' => 'mahesh@gudichemicals.com']);
     }
+
+    public function test_low_stock_threshold_update_and_alert_filtering(): void
+    {
+        $product = Product::first();
+        $this->assertNotNull($product);
+
+        // Update reorder level via AJAX endpoint
+        $response = $this->actingAs($this->admin)->postJson("/inventory/{$product->id}/reorder-level", [
+            'reorder_level' => 999.00,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertEquals(999.00, (float)$product->fresh()->reorder_level);
+        $this->assertTrue($product->fresh()->isLowStock());
+
+        // Check inventory low stock filter
+        $invResponse = $this->actingAs($this->admin)->get('/inventory?filter=low_stock');
+        $invResponse->assertStatus(200);
+        $invResponse->assertSee($product->sku);
+    }
+
+    public function test_dashboard_renders_interactive_charts_and_low_stock_alerts(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/dashboard');
+        $response->assertStatus(200);
+
+        // Verify Chart.js canvas elements
+        $response->assertSee('id="salesTrendChart"', false);
+        $response->assertSee('id="categoryChart"', false);
+        $response->assertSee('id="paymentsModeChart"', false);
+        $response->assertSee('cdn.jsdelivr.net/npm/chart.js', false);
+
+        // Verify Low Stock alerts section
+        $response->assertSee('Stock Reorder Level Alerts');
+        $response->assertSee('Filter Low Stock');
+    }
+
+    public function test_all_report_pages_export_pdf_via_dompdf(): void
+    {
+        $reports = [
+            '/reports/sales?export=pdf',
+            '/reports/gst?export=pdf',
+            '/reports/receivables?export=pdf',
+            '/reports/payables?export=pdf',
+            '/reports/collections?export=pdf',
+            '/reports/inventory?export=pdf',
+            '/reports/production?export=pdf',
+        ];
+
+        foreach ($reports as $url) {
+            $response = $this->actingAs($this->admin)->get($url);
+            $response->assertStatus(200);
+            $response->assertHeader('content-type', 'application/pdf');
+            $this->assertNotEmpty($response->getContent());
+        }
+    }
 }
