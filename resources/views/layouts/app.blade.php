@@ -400,7 +400,7 @@
                 </a>
 
                 <div class="menu-category">POS & Sales Billing</div>
-                <a href="{{ route('pos.index') }}" class="nav-link {{ request()->routeIs('pos.*') ? 'active' : '' }}">
+                <a href="{{ route('pos.index') }}" target="_blank" class="nav-link {{ request()->routeIs('pos.*') ? 'active' : '' }}">
                     <i class="fa-solid fa-cash-register text-success"></i> POS Fast Billing
                 </a>
                 <a href="{{ route('invoices.index') }}" class="nav-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
@@ -536,7 +536,7 @@
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('pos.index') }}" class="btn btn-success btn-sm px-3 fw-bold shadow-sm d-flex align-items-center">
+                    <a href="{{ route('pos.index') }}" target="_blank" class="btn btn-success btn-sm px-3 fw-bold shadow-sm d-flex align-items-center">
                         <i class="fa-solid fa-bolt me-1.5"></i> Fast Billing / POS
                     </a>
 

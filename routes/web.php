@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
     // POS & Sales Billing
     Route::prefix('pos')->name('pos.')->group(function () {
         Route::get('/', [PosController::class, 'index'])->name('index');
+        Route::get('/search', [PosController::class, 'search'])->name('search');
+        Route::get('/barcode', [PosController::class, 'barcode'])->name('barcode');
         Route::post('/calculate', [PosController::class, 'calculate'])->name('calculate');
         Route::post('/store', [PosController::class, 'store'])->name('store');
         Route::post('/customer/quick', [PosController::class, 'quickCustomer'])->name('customer.quick');

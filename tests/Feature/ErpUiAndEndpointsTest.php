@@ -136,6 +136,51 @@ class ErpUiAndEndpointsTest extends TestCase
         ]);
     }
 
+    public function test_pos_store_with_shorthand_single_payment(): void
+    {
+        $customer = Customer::walkInCustomer();
+        $product = Product::where('sku', 'FG-DEGREASE-1L')->firstOrFail();
+        $warehouse = Warehouse::where('code', 'WH-MAIN')->firstOrFail();
+        $invService = app(InventoryService::class);
+
+        $invService->addStock($product->id, $warehouse->id, 10.0, 65.0, 'opening_stock');
+
+        // Sending without payments array, only single payment_method and paid_amount
+        $response = $this->actingAs($this->admin)->postJson('/pos/store', [
+            'customer_id' => $customer->id,
+            'warehouse_id' => $warehouse->id,
+            'price_tier' => 'retail',
+            'cart_items' => [
+                [
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                ]
+            ],
+            'payment_method' => 'upi',
+            'paid_amount' => 212.00,
+            'reference_number' => 'UPI-REF-998877',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+    }
+
+    public function test_pos_search_and_barcode_lookup_endpoints(): void
+    {
+        $product = Product::where('sku', 'FG-DEGREASE-1L')->firstOrFail();
+
+        // 1. Search endpoint
+        $searchResponse = $this->actingAs($this->admin)->getJson('/pos/search?q=Degreaser');
+        $searchResponse->assertStatus(200);
+        $searchResponse->assertJsonFragment(['sku' => 'FG-DEGREASE-1L']);
+
+        // 2. Barcode exact match endpoint
+        $barcodeResponse = $this->actingAs($this->admin)->getJson("/pos/barcode?code={$product->barcode}");
+        $barcodeResponse->assertStatus(200);
+        $barcodeResponse->assertJson(['found' => true]);
+        $barcodeResponse->assertJsonPath('product.sku', 'FG-DEGREASE-1L');
+    }
+
     public function test_purchase_order_creation_and_approval(): void
     {
         $vendor = Vendor::firstOrFail();
