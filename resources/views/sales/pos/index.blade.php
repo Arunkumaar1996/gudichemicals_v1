@@ -127,10 +127,16 @@
             display: flex;
             gap: 0.35rem;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
             padding: 0.4rem 0.85rem;
             background: #f8fafc;
             border-bottom: 1px solid var(--pos-border);
             flex-shrink: 0;
+        }
+
+        .category-tab-strip::-webkit-scrollbar {
+            display: none;
         }
 
         .cat-tab {
@@ -156,6 +162,7 @@
             flex-grow: 1;
             overflow-y: auto;
             padding: 0.6rem;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Product Tile */
@@ -239,12 +246,18 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            min-width: 420px;
+            min-width: 0;
             background: var(--pos-panel-bg);
             border-radius: 10px;
             border: 1px solid var(--pos-border);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .cart-container {
+                min-width: 380px;
+            }
         }
 
         .cart-top-bar {
@@ -504,6 +517,13 @@
             .compact-product-card {
                 padding: 0.45rem;
             }
+            .compact-product-card .item-name {
+                font-size: 0.82rem;
+                min-height: 2.1rem;
+            }
+            .compact-product-card .price-tag {
+                font-size: 0.95rem;
+            }
             .compact-total-banner {
                 padding: 0.45rem 0.75rem;
             }
@@ -516,6 +536,24 @@
             }
             .modal-dialog {
                 margin: 0.5rem;
+            }
+            .mini-qty-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1.1rem;
+            }
+            .mini-qty-input {
+                width: 44px;
+                height: 32px;
+                font-size: 0.95rem;
+            }
+            .mini-del-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.85rem;
+            }
+            .cart-item-card {
+                padding: 0.55rem;
             }
         }
     </style>
@@ -637,7 +675,7 @@
                             $inStock = $p['stock'] > 0;
                             $batchesCount = count($p['batches'] ?? []);
                         @endphp
-                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 product-tile-col"
+                        <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-3 product-tile-col"
                              onclick="handleProductClick({{ json_encode($p) }})">
                             <div class="compact-product-card {{ !$inStock ? 'out-of-stock' : '' }}">
                                 <div>
@@ -919,14 +957,14 @@
 
                 <!-- Cash Tender Shortcuts & Change Box -->
                 <div id="cashBox" class="p-2.5 bg-light rounded border mb-2.5">
-                    <div class="d-flex justify-content-between align-items-center mb-1.5">
+                    <div class="d-flex justify-content-between align-items-center mb-1.5 flex-wrap gap-1">
                         <small class="text-muted fw-bold" style="font-size: 0.7rem;">Cash Presets:</small>
-                        <div class="d-flex gap-1">
-                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1.5" style="font-size: 0.7rem;" onclick="setCashTender('exact')">Exact</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1.5" style="font-size: 0.7rem;" onclick="setCashTender(100)">₹100</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1.5" style="font-size: 0.7rem;" onclick="setCashTender(200)">₹200</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1.5" style="font-size: 0.7rem;" onclick="setCashTender(500)">₹500</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-1.5" style="font-size: 0.7rem;" onclick="setCashTender(2000)">₹2000</button>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2 fw-semibold" style="font-size: 0.72rem;" onclick="setCashTender('exact')">Exact</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2 fw-semibold" style="font-size: 0.72rem;" onclick="setCashTender(100)">₹100</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2 fw-semibold" style="font-size: 0.72rem;" onclick="setCashTender(200)">₹200</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2 fw-semibold" style="font-size: 0.72rem;" onclick="setCashTender(500)">₹500</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2 fw-semibold" style="font-size: 0.72rem;" onclick="setCashTender(2000)">₹2000</button>
                         </div>
                     </div>
                     <div class="row g-2">
@@ -1294,7 +1332,7 @@
             }
 
             const tile = `
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 product-tile-col" onclick="handleProductClick(${jsonStr})">
+                <div class="col-6 col-sm-6 col-md-6 col-lg-4 col-xl-3 product-tile-col" onclick="handleProductClick(${jsonStr})">
                     <div class="${cardClass}">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
