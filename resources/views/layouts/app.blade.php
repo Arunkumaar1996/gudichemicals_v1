@@ -35,16 +35,29 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html {
+            font-size: 14px; /* Scaled down base font size by 2px (from default 16px to 14px) */
+        }
+
+        body {
             height: 100vh;
             margin: 0;
             padding: 0;
             overflow: hidden;
             font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+            font-size: 0.875rem; /* Clean, compact, readable typography */
             background-color: var(--gudi-bg);
             color: var(--gudi-text-main);
             -webkit-font-smoothing: antialiased;
         }
+
+        /* Headings scaled down by ~2px */
+        h1, .h1 { font-size: 1.55rem; }
+        h2, .h2 { font-size: 1.35rem; }
+        h3, .h3 { font-size: 1.18rem; }
+        h4, .h4 { font-size: 1.02rem; }
+        h5, .h5 { font-size: 0.90rem; }
+        h6, .h6 { font-size: 0.80rem; }
 
         /* App Viewport Container: Exactly 100vh */
         #app-layout {
@@ -129,28 +142,28 @@
         }
 
         #sidebar .menu-category {
-            font-size: 0.68rem;
+            font-size: 0.62rem;
             text-transform: uppercase;
             font-weight: 700;
             letter-spacing: 0.09em;
             color: #475569;
-            padding: 1rem 0.85rem 0.35rem 0.85rem;
+            padding: 0.75rem 0.85rem 0.25rem 0.85rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Nav link & Submenu Accordion Items */
+        /* Nav link & Submenu Accordion Items (Reduced by ~2px) */
         #sidebar .nav-link,
         #sidebar .menu-toggle {
             color: #94a3b8;
-            padding: 0.6rem 0.85rem;
-            font-size: 0.86rem;
+            padding: 0.48rem 0.75rem;
+            font-size: 0.78rem;
             font-weight: 500;
             display: flex;
             align-items: center;
-            border-radius: 9px;
-            margin-bottom: 3px;
+            border-radius: 8px;
+            margin-bottom: 2px;
             transition: all 0.18s ease;
             text-decoration: none;
             background: transparent;
@@ -163,9 +176,9 @@
 
         #sidebar .nav-link i,
         #sidebar .menu-toggle .menu-icon i {
-            width: 20px;
-            font-size: 0.98rem;
-            margin-right: 10px;
+            width: 18px;
+            font-size: 0.90rem;
+            margin-right: 8px;
             opacity: 0.9;
             transition: transform 0.2s ease, opacity 0.2s ease;
             text-align: center;
@@ -200,7 +213,7 @@
         /* Rotating Chevron Indicator */
         #sidebar .menu-arrow {
             margin-left: auto;
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0.6;
         }
@@ -213,8 +226,8 @@
 
         /* Submenu container (Accordion) */
         #sidebar .menu-sub {
-            padding-left: 0.5rem;
-            margin-bottom: 4px;
+            padding-left: 0.4rem;
+            margin-bottom: 3px;
             position: relative;
             transition: all 0.25s ease-out;
         }
@@ -222,7 +235,7 @@
         #sidebar .menu-sub::before {
             content: '';
             position: absolute;
-            left: 21px;
+            left: 18px;
             top: 4px;
             bottom: 6px;
             width: 1px;
@@ -231,12 +244,12 @@
 
         #sidebar .menu-sub-link {
             color: #94a3b8;
-            padding: 0.45rem 0.75rem 0.45rem 1.85rem;
-            font-size: 0.82rem;
+            padding: 0.36rem 0.65rem 0.36rem 1.6rem;
+            font-size: 0.74rem;
             font-weight: 500;
             display: flex;
             align-items: center;
-            border-radius: 7px;
+            border-radius: 6px;
             text-decoration: none;
             margin-bottom: 2px;
             position: relative;
@@ -245,9 +258,9 @@
 
         #sidebar .menu-sub-link .bullet-dot {
             position: absolute;
-            left: 11px;
-            width: 5px;
-            height: 5px;
+            left: 9px;
+            width: 4.5px;
+            height: 4.5px;
             border-radius: 50%;
             background-color: #475569;
             transition: all 0.18s ease;
@@ -471,12 +484,12 @@
             }
         }
 
-        /* Modern Form Inputs & Controls */
+        /* Modern Form Inputs & Controls (Reduced by ~2px) */
         .form-control, .form-select {
             border: 1px solid #cbd5e1;
-            border-radius: 9px;
-            padding: 0.56rem 0.85rem;
-            font-size: 0.88rem;
+            border-radius: 7px;
+            padding: 0.42rem 0.75rem;
+            font-size: 0.80rem;
             color: #1e293b;
             background-color: #ffffff;
             transition: all 0.18s ease-in-out;
@@ -485,36 +498,37 @@
 
         .form-control:focus, .form-select:focus {
             border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.16);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
             outline: none;
             background-color: #ffffff;
         }
 
         .form-control::placeholder {
             color: #94a3b8;
-            font-size: 0.84rem;
+            font-size: 0.78rem;
         }
 
         .form-label {
-            font-size: 0.8rem;
+            font-size: 0.74rem;
             font-weight: 600;
             color: #475569;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.25rem;
             letter-spacing: 0.01em;
         }
 
         .input-group-text {
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
-            border-radius: 9px;
+            border-radius: 7px;
             color: #64748b;
-            font-size: 0.88rem;
+            font-size: 0.80rem;
+            padding: 0.42rem 0.75rem;
         }
 
-        /* Modern Cards */
+        /* Modern Cards (Compact Padding) */
         .card {
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
+            border-radius: 10px;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
             background: #ffffff;
             transition: box-shadow 0.2s ease, transform 0.2s ease;
@@ -523,31 +537,59 @@
         .card-header {
             background-color: #ffffff;
             border-bottom: 1px solid #f1f5f9;
-            padding: 1rem 1.35rem;
-            border-top-left-radius: 14px !important;
-            border-top-right-radius: 14px !important;
+            padding: 0.75rem 1rem;
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+        }
+
+        .card-body {
+            padding: 0.95rem 1rem;
         }
 
         .card-stat {
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
+            border-radius: 10px;
             background: #ffffff;
+            padding: 0.85rem 1rem !important;
             transition: all 0.2s ease;
         }
 
         .card-stat:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 16px -3px rgba(0, 0, 0, 0.06);
             border-color: #cbd5e1;
         }
 
-        /* Modern Buttons */
+        .card-stat h3 {
+            font-size: 1.35rem;
+        }
+
+        /* Modern Buttons (Reduced by 2px with compact padding) */
         .btn {
-            border-radius: 9px;
+            border-radius: 7px;
             font-weight: 600;
-            padding: 0.5rem 1rem;
-            font-size: 0.88rem;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.78rem;
             transition: all 0.18s ease-in-out;
+            line-height: 1.4;
+        }
+
+        .btn-sm {
+            padding: 0.22rem 0.55rem;
+            font-size: 0.72rem;
+            border-radius: 6px;
+        }
+
+        .btn-lg {
+            padding: 0.45rem 0.95rem;
+            font-size: 0.88rem;
+            border-radius: 8px;
+        }
+
+        .btn-xs {
+            padding: 0.15rem 0.45rem;
+            font-size: 0.68rem;
+            border-radius: 5px;
         }
 
         .btn-gudi-primary {
@@ -574,25 +616,33 @@
             color: #ffffff;
         }
 
-        /* Modern Tables */
+        /* Badges (Reduced by ~2px) */
+        .badge {
+            font-size: 0.68rem;
+            padding: 0.28em 0.55em;
+            font-weight: 600;
+        }
+
+        /* Modern Tables (Reduced by 2px & compact padding) */
         .table {
             color: #334155;
             vertical-align: middle;
-            font-size: 0.88rem;
+            font-size: 0.80rem;
         }
 
         .table > :not(caption) > * > * {
-            padding: 0.85rem 1rem;
+            padding: 0.55rem 0.75rem;
         }
 
         .table thead th {
             background-color: #f8fafc;
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #64748b;
             border-bottom: 1px solid #e2e8f0;
+            padding: 0.55rem 0.75rem;
         }
 
         .table tbody tr {
@@ -605,8 +655,8 @@
 
         /* Custom Scrollbars */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
@@ -626,13 +676,19 @@
             background: #334155;
         }
 
-        /* Mobile Responsive Drawer */
+        /* -------------------------------------------------------------
+         * MOBILE RESPONSIVENESS (ALL DEVICES: PHONE, TABLET, DESKTOP)
+         * ------------------------------------------------------------- */
         @media (max-width: 991.98px) {
             #sidebar {
                 position: fixed;
-                left: -270px;
+                left: -285px;
                 top: 0;
                 bottom: 0;
+                width: 275px !important;
+                z-index: 1050;
+                transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
             }
             #sidebar.show {
                 left: 0;
@@ -641,12 +697,60 @@
                 display: none;
                 position: fixed;
                 inset: 0;
-                background: rgba(15, 23, 42, 0.6);
+                background: rgba(15, 23, 42, 0.65);
                 backdrop-filter: blur(4px);
-                z-index: 1035;
+                z-index: 1045;
             }
             .sidebar-backdrop.show {
                 display: block;
+            }
+
+            /* Responsive Topbar on Mobile */
+            .topbar {
+                height: 56px;
+                padding: 0 0.85rem;
+            }
+
+            /* Fixed Footer on Mobile */
+            .footer-bar {
+                height: 38px;
+                padding: 0 0.85rem;
+                font-size: 0.72rem;
+            }
+
+            /* Content Scroller on Mobile */
+            .page-content-wrapper {
+                height: calc(100vh - 56px - 38px);
+                padding: 0.85rem;
+            }
+
+            .table-responsive {
+                margin-bottom: 0;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        /* Small Phones (iPhone SE, Galaxy, width < 576px) */
+        @media (max-width: 575.98px) {
+            .topbar {
+                padding: 0 0.6rem;
+            }
+            .page-content-wrapper {
+                padding: 0.65rem;
+            }
+            .footer-bar {
+                font-size: 0.68rem;
+                padding: 0 0.6rem;
+            }
+            .card-stat {
+                padding: 0.75rem !important;
+            }
+            .card-stat h3 {
+                font-size: 1.15rem;
+            }
+            .btn {
+                padding: 0.3rem 0.65rem;
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -957,15 +1061,15 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('pos.index') }}" target="_blank" class="btn btn-success btn-sm px-3 fw-bold shadow-sm d-flex align-items-center">
-                        <i class="fa-solid fa-bolt me-1.5"></i> Fast Billing / POS
+                <div class="d-flex align-items-center gap-1.5 gap-sm-2">
+                    <a href="{{ route('pos.index') }}" target="_blank" class="btn btn-success btn-sm px-2 px-sm-3 fw-bold shadow-sm d-flex align-items-center">
+                        <i class="fa-solid fa-bolt me-1"></i> <span class="d-none d-sm-inline">Fast Billing / </span>POS
                     </a>
 
                     <div class="dropdown">
-                        <button class="btn btn-light btn-sm border dropdown-toggle d-flex align-items-center py-1.5" type="button" data-bs-toggle="dropdown">
-                            <i class="fa-regular fa-user-circle me-1.5 text-primary fs-6"></i>
-                            <span class="fw-semibold">{{ auth()->user()->name ?? 'Admin' }}</span>
+                        <button class="btn btn-light btn-sm border dropdown-toggle d-flex align-items-center py-1 px-2" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-user-circle me-1 text-primary fs-6"></i>
+                            <span class="fw-semibold d-none d-sm-inline">{{ auth()->user()->name ?? 'Admin' }}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                             <li class="px-3 py-2 border-bottom">

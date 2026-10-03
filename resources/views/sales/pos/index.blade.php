@@ -386,6 +386,64 @@
         .font-scaler-reset:hover {
             color: #fef08a !important;
         }
+
+        /* Responsive Media Queries for Tablets and Mobile Devices */
+        @media (max-width: 991.98px) {
+            body, #pos-app {
+                height: auto !important;
+                min-height: 100vh;
+                overflow-y: auto !important;
+            }
+            .pos-workspace-grid {
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+                padding: 0.5rem;
+                gap: 0.75rem;
+            }
+            .catalog-container {
+                flex: none;
+                width: 100%;
+                height: 480px;
+                min-height: 380px;
+            }
+            .cart-container {
+                flex: none;
+                width: 100%;
+                height: auto;
+                min-height: 480px;
+            }
+            .cart-table-body {
+                max-height: 280px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .pos-top-nav {
+                padding: 0 0.5rem;
+                height: 46px;
+            }
+            .pos-workspace-grid {
+                padding: 0.25rem;
+                gap: 0.5rem;
+            }
+            .catalog-container {
+                height: 420px;
+            }
+            .compact-product-card {
+                padding: 0.45rem;
+            }
+            .compact-total-banner {
+                padding: 0.45rem 0.75rem;
+            }
+            #lblGrandTotal {
+                font-size: 1.35rem !important;
+            }
+            #posWarehouse {
+                min-width: 110px !important;
+                max-width: 135px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -406,21 +464,21 @@
     <!-- Top Control Bar -->
     <header class="pos-top-nav">
         <div class="d-flex align-items-center">
-            <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-light py-0.5 px-2 me-2.5 fw-semibold" style="font-size: 0.8rem;">
-                <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+            <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-light py-0.5 px-2 me-2 fw-semibold" style="font-size: 0.78rem;" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left me-0.5"></i> <span class="d-none d-sm-inline">Dashboard</span>
             </a>
             <div class="d-flex align-items-center">
                 <i class="fa-solid fa-flask-vial text-warning me-1.5 fs-5"></i>
-                <span class="fw-bold tracking-wide" style="font-size: 0.95rem;">GUDI CHEMICALS</span>
-                <span class="badge bg-secondary bg-opacity-25 ms-2 text-white-50" style="font-size: 0.72rem;">POS Workstation</span>
+                <span class="fw-bold tracking-wide d-none d-sm-inline" style="font-size: 0.92rem;">GUDI CHEMICALS</span>
+                <span class="badge bg-secondary bg-opacity-25 ms-1.5 text-white-50 d-none d-md-inline" style="font-size: 0.70rem;">POS Workstation</span>
             </div>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-1.5 gap-sm-2">
             <!-- Warehouse Selector -->
-            <div class="d-flex align-items-center text-white-50 small" style="font-size: 0.82rem;">
-                <i class="fa-solid fa-warehouse me-1.5 text-warning"></i>
-                <select id="posWarehouse" class="form-select form-select-sm py-0.5 px-2 bg-dark text-white border-secondary fw-semibold" style="font-size: 0.82rem; min-width: 175px;" onchange="onWarehouseChange()">
+            <div class="d-flex align-items-center text-white-50 small" style="font-size: 0.80rem;">
+                <i class="fa-solid fa-warehouse me-1 text-warning d-none d-sm-inline"></i>
+                <select id="posWarehouse" class="form-select form-select-sm py-0.5 px-1.5 bg-dark text-white border-secondary fw-semibold" style="font-size: 0.78rem; min-width: 130px;" onchange="onWarehouseChange()">
                     @foreach($warehouses as $w)
                         <option value="{{ $w->id }}">{{ $w->name }}</option>
                     @endforeach
@@ -428,29 +486,29 @@
             </div>
 
             <!-- Live Clock -->
-            <div class="text-white-50 small d-none d-lg-block px-1" style="font-family: var(--pos-mono); font-size: 0.82rem;" id="liveClock">
+            <div class="text-white-50 small d-none d-lg-block px-1" style="font-family: var(--pos-mono); font-size: 0.80rem;" id="liveClock">
                 --:--:--
             </div>
 
             <!-- DYNAMIC FONT SIZE ADJUSTER BUTTONS (A- / 100% / A+) -->
-            <div class="d-flex align-items-center bg-black bg-opacity-25 rounded px-2 py-0.5 border border-white border-opacity-15 me-1" title="Adjust Interface Font Size">
-                <span class="text-white-50 me-1 d-none d-xl-inline" style="font-size: 0.75rem;"><i class="fa-solid fa-text-height me-0.5"></i> Text:</span>
-                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none p-0 px-1.5 font-scaler-btn" onclick="adjustFontSize(-1)" title="Decrease Font Size (A-)">
+            <div class="d-flex align-items-center bg-black bg-opacity-25 rounded px-1.5 py-0.5 border border-white border-opacity-15 me-0.5" title="Adjust Interface Font Size">
+                <span class="text-white-50 me-1 d-none d-xl-inline" style="font-size: 0.72rem;"><i class="fa-solid fa-text-height me-0.5"></i> Text:</span>
+                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none p-0 px-1 font-scaler-btn" onclick="adjustFontSize(-1)" title="Decrease Font Size (A-)">
                     <i class="fa-solid fa-font fa-xs"></i><i class="fa-solid fa-minus fa-2xs ms-0.5"></i>
                 </button>
-                <button type="button" class="btn btn-sm btn-link text-warning fw-bold text-decoration-none p-0 px-1 font-scaler-reset" onclick="resetFontSize()" title="Click to Reset Font Size (100% Normal)" style="font-size: 0.82rem; min-width: 44px;">
+                <button type="button" class="btn btn-sm btn-link text-warning fw-bold text-decoration-none p-0 px-1 font-scaler-reset" onclick="resetFontSize()" title="Click to Reset Font Size (100% Normal)" style="font-size: 0.78rem; min-width: 40px;">
                     <span id="lblFontSizePercent">100%</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none p-0 px-1.5 font-scaler-btn" onclick="adjustFontSize(1)" title="Increase Font Size (A+)">
+                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none p-0 px-1 font-scaler-btn" onclick="adjustFontSize(1)" title="Increase Font Size (A+)">
                     <i class="fa-solid fa-font fa-sm"></i><i class="fa-solid fa-plus fa-2xs ms-0.5"></i>
                 </button>
             </div>
 
-            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold d-none d-md-inline" style="font-size: 0.78rem;">
+            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 fw-semibold d-none d-md-inline" style="font-size: 0.72rem;">
                 <i class="fa-solid fa-user me-1"></i> {{ auth()->user()->name }}
             </span>
 
-            <button type="button" class="btn btn-sm btn-outline-light py-0.5 px-2" onclick="toggleFullScreen()" title="Fullscreen" style="font-size: 0.8rem;">
+            <button type="button" class="btn btn-sm btn-outline-light py-0.5 px-2" onclick="toggleFullScreen()" title="Fullscreen" style="font-size: 0.78rem;">
                 <i class="fa-solid fa-expand"></i>
             </button>
         </div>
