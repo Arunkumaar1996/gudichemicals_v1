@@ -24,11 +24,11 @@ class MastersSeeder extends Seeder
         // 2. Warehouses
         $whMain = Warehouse::firstOrCreate(
             ['code' => 'WH-MAIN'],
-            ['name' => 'Main Chemical Plant & Raw Stores', 'location' => 'Plot 42, MIDC Chemical Zone, Pune', 'is_primary' => true, 'is_active' => true]
+            ['name' => 'Main Chemical Plant & Depot', 'location' => 'Spic, Thenkarai, Coimbatore, Tamil Nadu 641010', 'is_primary' => true, 'is_active' => true]
         );
         $whFg = Warehouse::firstOrCreate(
             ['code' => 'WH-FG'],
-            ['name' => 'Finished Goods & Distribution Warehouse', 'location' => 'Bay 3, MIDC Logistics Hub, Pune', 'is_primary' => false, 'is_active' => true]
+            ['name' => 'Finished Cleaning Products Warehouse', 'location' => 'Spic, Thenkarai, Coimbatore, Tamil Nadu 641010', 'is_primary' => false, 'is_active' => true]
         );
 
         // 3. Units
@@ -103,6 +103,25 @@ class MastersSeeder extends Seeder
 
         // 9. Customers
         Customer::walkInCustomer();
+
+        Customer::firstOrCreate(
+            ['phone' => '9842299881'],
+            [
+                'customer_type' => 'wholesale',
+                'name' => 'Gudi Wholesale & Dealership Depot',
+                'company_name' => 'Gudi Cleaning Supplies Dealership',
+                'email' => 'dealers@gudichemicals.com',
+                'billing_address' => 'Spic, Thenkarai',
+                'shipping_address' => 'Spic, Thenkarai',
+                'city' => 'Coimbatore',
+                'state_code' => '33',
+                'state_name' => 'Tamil Nadu',
+                'pincode' => '641010',
+                'credit_limit' => 150000.00,
+                'opening_balance' => 0.00,
+                'current_balance' => 0.00,
+            ]
+        );
 
         Customer::firstOrCreate(
             ['phone' => '9890123456'],

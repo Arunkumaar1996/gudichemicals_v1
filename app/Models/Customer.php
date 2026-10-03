@@ -38,8 +38,12 @@ class Customer extends Model
             [
                 'name' => 'Walk-in Customer / Cash Counter',
                 'customer_type' => 'retail',
-                'state_code' => '27',
-                'state_name' => 'Maharashtra',
+                'billing_address' => 'Spic, Thenkarai',
+                'shipping_address' => 'Spic, Thenkarai',
+                'city' => 'Coimbatore',
+                'state_code' => '33',
+                'state_name' => 'Tamil Nadu',
+                'pincode' => '641010',
                 'is_active' => true,
             ]
         );

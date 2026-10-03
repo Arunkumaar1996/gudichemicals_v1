@@ -120,6 +120,42 @@
         70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
         100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
+
+    /* Uniform Default Height Dashboard Tables */
+    .dashboard-table-container {
+        height: 310px;
+        min-height: 310px;
+        max-height: 310px;
+        overflow-y: auto;
+        overflow-x: auto;
+        position: relative;
+    }
+    .dashboard-table-container thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f8fafc;
+        z-index: 2;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        border-bottom: 2px solid #e2e8f0;
+    }
+    .dashboard-table-container table {
+        margin-bottom: 0;
+    }
+    .dashboard-table-container::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .dashboard-table-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    .dashboard-table-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .dashboard-table-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
 </style>
 
 <!-- Modern Hero Banner Section -->
@@ -465,7 +501,7 @@
                 </div>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
+                <div class="table-responsive dashboard-table-container">
                     <table class="table table-hover align-middle mb-0" style="font-size: 0.80rem;">
                         <thead class="table-light">
                             <tr>
@@ -504,8 +540,8 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
+                                <tr style="height: 240px;">
+                                    <td colspan="6" class="text-center text-muted align-middle py-4">
                                         <i class="fa-regular fa-circle-check text-success fa-2x d-block mb-1"></i>
                                         All raw chemicals and finished products are safely above reorder thresholds.
                                     </td>
@@ -536,7 +572,7 @@
                 <a href="{{ route('invoices.index') }}" class="btn btn-sm btn-link text-decoration-none p-0 fw-semibold">View All &rarr;</a>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
+                <div class="table-responsive dashboard-table-container">
                     <table class="table table-hover align-middle mb-0" style="font-size: 0.80rem;">
                         <thead class="table-light">
                             <tr>
@@ -570,7 +606,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5" class="text-center text-muted py-3">No invoices posted yet.</td></tr>
+                                <tr style="height: 240px;"><td colspan="5" class="text-center text-muted align-middle py-3">No invoices posted yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -588,7 +624,7 @@
                 <a href="{{ route('production.orders.index') }}" class="btn btn-sm btn-link text-decoration-none p-0 fw-semibold text-success">View All &rarr;</a>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
+                <div class="table-responsive dashboard-table-container">
                     <table class="table table-hover align-middle mb-0" style="font-size: 0.80rem;">
                         <thead class="table-light">
                             <tr>
@@ -622,7 +658,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5" class="text-center text-muted py-3">No production orders initiated yet.</td></tr>
+                                <tr style="height: 240px;"><td colspan="5" class="text-center text-muted align-middle py-3">No production orders initiated yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

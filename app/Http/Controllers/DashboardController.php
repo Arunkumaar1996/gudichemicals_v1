@@ -50,17 +50,17 @@ class DashboardController extends Controller
             ->values();
 
         $lowStockTotalCount = $allLowStock->count();
-        $lowStockProducts = $allLowStock->take(8);
+        $lowStockProducts = $allLowStock->take(15);
 
         // 6. Recent activity lists
         $recentInvoices = SalesInvoice::with('customer')
             ->latest()
-            ->take(6)
+            ->take(15)
             ->get();
 
         $recentBatches = ProductionOrder::with(['outputProduct', 'formula'])
             ->latest()
-            ->take(5)
+            ->take(15)
             ->get();
 
         $recentMovements = StockMovement::with(['product', 'warehouse', 'creator'])
