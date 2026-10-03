@@ -20,6 +20,8 @@ class InventoryController extends Controller
 
     public function index(Request $request)
     {
+        abort_if(!auth()->user()->can('inventory.view'), 403, 'Access Denied: You do not have permission to view inventory stock levels.');
+
         $warehouseId = $request->warehouse_id;
         $categoryId = $request->category_id;
         $search = $request->search;
@@ -69,6 +71,8 @@ class InventoryController extends Controller
      */
     public function updateReorderLevel(Request $request, Product $product)
     {
+        abort_if(!auth()->user()->can('inventory.adjust') && !auth()->user()->can('inventory.view'), 403, 'Access Denied: You do not have permission to update low stock alert levels.');
+
         $validated = $request->validate([
             'reorder_level' => ['required', 'numeric', 'min:0'],
         ]);
@@ -90,6 +94,8 @@ class InventoryController extends Controller
 
     public function ledger(Request $request)
     {
+        abort_if(!auth()->user()->can('inventory.view'), 403, 'Access Denied: You do not have permission to view stock movement ledgers.');
+
         $query = StockMovement::with(['product.unit', 'warehouse', 'batch', 'creator'])
             ->latest('movement_date');
 
@@ -122,6 +128,8 @@ class InventoryController extends Controller
 
     public function createOpeningStock()
     {
+        abort_if(!auth()->user()->can('inventory.adjust'), 403, 'Access Denied: You do not have permission to enter opening stock.');
+
         $products = Product::where('is_active', true)->orderBy('name')->get();
         $warehouses = Warehouse::where('is_active', true)->get();
 
@@ -130,6 +138,7 @@ class InventoryController extends Controller
 
     public function storeOpeningStock(Request $request)
     {
+        abort_if(!auth()->user()->can('inventory.adjust'), 403, 'Access Denied: You do not have permission to record opening stock.');
         $validated = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'warehouse_id' => ['required', 'exists:warehouses,id'],

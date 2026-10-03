@@ -95,6 +95,8 @@ class RoleController extends Controller
 
     public function index()
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have the required "users.manage" permission to view or configure staff roles & security matrix.');
+
         $currentUser = auth()->user();
         $isSuperAdmin = $this->isSuperAdmin($currentUser);
 
@@ -113,6 +115,8 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to create custom staff roles.');
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100', 'unique:roles,name'],
             'permissions' => ['nullable', 'array'],
@@ -134,6 +138,8 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to modify role permissions.');
+
         if ($role->name === 'Super Admin' && !$this->isSuperAdmin(auth()->user())) {
             return back()->with('error', 'Super Admin role is protected and cannot be modified.');
         }
@@ -161,6 +167,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to delete staff roles.');
+
         if (in_array($role->name, ['Super Admin', 'Admin'])) {
             return back()->with('error', "System role '{$role->name}' is protected and cannot be deleted.");
         }

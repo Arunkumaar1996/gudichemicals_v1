@@ -14,6 +14,8 @@ class FormulaController extends Controller
 {
     public function index()
     {
+        abort_if(!auth()->user()->can('production.view') && !auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to view chemical formulas and recipes (BOM).');
+
         $formulas = Formula::with(['product.unit', 'outputUnit', 'items.ingredient', 'approver'])
             ->orderBy('name')
             ->paginate(15);
@@ -23,6 +25,8 @@ class FormulaController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to create chemical formulas.');
+
         $products = Product::whereIn('item_type', ['semi_finished', 'finished_goods'])
             ->where('is_active', true)
             ->orderBy('name')
@@ -41,6 +45,7 @@ class FormulaController extends Controller
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to save chemical formulas.');
         $validated = $request->validate([
             'formula_code' => ['required', 'string', 'max:50', 'unique:formulas,formula_code'],
             'name' => ['required', 'string', 'max:200'],
@@ -91,6 +96,8 @@ class FormulaController extends Controller
 
     public function show(Formula $formula)
     {
+        abort_if(!auth()->user()->can('production.view') && !auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to view chemical recipe specifications.');
+
         $formula->load(['product.unit', 'outputUnit', 'items.ingredient.unit', 'items.unit', 'productionOrders']);
         return view('production.formulas.show', compact('formula'));
     }

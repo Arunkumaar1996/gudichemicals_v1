@@ -19,6 +19,8 @@ class PosController extends Controller
 
     public function index()
     {
+        abort_if(!auth()->user()->can('sales.create') && !auth()->user()->can('pos.access'), 403, 'Access Denied: You do not have permission to access the POS Fast Billing Desk.');
+
         $warehouses = Warehouse::where('is_active', true)->get();
         $defaultWarehouse = $warehouses->first();
         $warehouseId = $defaultWarehouse?->id;

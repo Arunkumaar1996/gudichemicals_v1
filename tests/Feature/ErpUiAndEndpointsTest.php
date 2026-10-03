@@ -433,7 +433,14 @@ class ErpUiAndEndpointsTest extends TestCase
     {
         $cashier = User::where('email', 'cashier@gudichemicals.com')->firstOrFail();
 
-        // When cashier views /users, the developer Super Admin user is NOT visible
+        // Unauthorized user without users.manage permission is blocked with 403 error screen UI
+        $forbiddenResponse = $this->actingAs($cashier)->get('/users');
+        $forbiddenResponse->assertStatus(403);
+        $forbiddenResponse->assertSee('Access Restricted', false);
+        $forbiddenResponse->assertSee('HTTP 403', false);
+
+        // Authorized staff sub-admin with users.manage permission can view /users, but Super Admin developer is hidden
+        $cashier->givePermissionTo('users.manage');
         $response = $this->actingAs($cashier)->get('/users');
         $response->assertStatus(200);
         $response->assertDontSee('admin@gudichemicals.com');
@@ -471,5 +478,90 @@ class ErpUiAndEndpointsTest extends TestCase
         $adminResponse->assertSee('POS & Sales Billing', false);
         $adminResponse->assertSee('Chemical Production');
         $adminResponse->assertSee('Settings & Users', false);
+    }
+
+    public function test_unauthorized_users_are_blocked_from_restricted_pages_with_403(): void
+    {
+        $cashier = User::where('email', 'cashier@gudichemicals.com')->firstOrFail();
+
+        // Cashier has no production permission -> accessing /production/orders/create gives 403 error page
+        $prodResponse = $this->actingAs($cashier)->get('/production/orders/create');
+        $prodResponse->assertStatus(403);
+        $prodResponse->assertSee('HTTP 403', false);
+        $prodResponse->assertSee('Access Restricted', false);
+
+        // Cashier has no settings permission -> accessing /settings gives 403 error page
+        $settingsResponse = $this->actingAs($cashier)->get('/settings');
+        $settingsResponse->assertStatus(403);
+        $settingsResponse->assertSee('HTTP 403', false);
+        $settingsResponse->assertSee('Access Restricted', false);
+
+        // Cashier has no roles permission -> accessing /roles gives 403 error page
+        $rolesResponse = $this->actingAs($cashier)->get('/roles');
+        $rolesResponse->assertStatus(403);
+        $rolesResponse->assertSee('HTTP 403', false);
+        $rolesResponse->assertSee('Access Restricted', false);
+
+        // Super Admin has bypass and can access all of them
+        $adminProdResponse = $this->actingAs($this->admin)->get('/production/orders/create');
+        $adminProdResponse->assertStatus(200);
+
+        $adminSettingsResponse = $this->actingAs($this->admin)->get('/settings');
+        $adminSettingsResponse->assertStatus(200);
+
+        $adminRolesResponse = $this->actingAs($this->admin)->get('/roles');
+        $adminRolesResponse->assertStatus(200);
+    }
+
+    public function test_http_status_error_screens_render_with_custom_ui_and_animations(): void
+    {
+        // 403 Forbidden
+        $response403 = $this->actingAs($this->admin)->get('/errors/403');
+        $response403->assertStatus(403);
+        $response403->assertSee('HTTP 403', false);
+        $response403->assertSee('Access Restricted', false);
+        $response403->assertSee('fa-shield-halved', false);
+
+        // 404 Not Found
+        $response404 = $this->actingAs($this->admin)->get('/errors/404');
+        $response404->assertStatus(404);
+        $response404->assertSee('HTTP 404', false);
+        $response404->assertSee('Record or Route Not Found', false);
+        $response404->assertSee('fa-compass', false);
+
+        // 419 Session Expired
+        $response419 = $this->actingAs($this->admin)->get('/errors/419');
+        $response419->assertStatus(419);
+        $response419->assertSee('HTTP 419', false);
+        $response419->assertSee('Session Security Timeout', false);
+        $response419->assertSee('fa-hourglass-half', false);
+
+        // 500 Internal Server Error
+        $response500 = $this->actingAs($this->admin)->get('/errors/500');
+        $response500->assertStatus(500);
+        $response500->assertSee('HTTP 500', false);
+        $response500->assertSee('Internal Server Exception', false);
+        $response500->assertSee('fa-server', false);
+
+        // 503 Maintenance
+        $response503 = $this->actingAs($this->admin)->get('/errors/503');
+        $response503->assertStatus(503);
+        $response503->assertSee('HTTP 503', false);
+        $response503->assertSee('Scheduled System Maintenance', false);
+        $response503->assertSee('fa-gears', false);
+
+        // 401 Unauthorized
+        $response401 = $this->actingAs($this->admin)->get('/errors/401');
+        $response401->assertStatus(401);
+        $response401->assertSee('HTTP 401', false);
+        $response401->assertSee('Authentication Required', false);
+        $response401->assertSee('fa-key', false);
+
+        // 429 Too Many Requests
+        $response429 = $this->actingAs($this->admin)->get('/errors/429');
+        $response429->assertStatus(429);
+        $response429->assertSee('HTTP 429', false);
+        $response429->assertSee('Rate Limit Exceeded', false);
+        $response429->assertSee('fa-gauge-simple-high', false);
     }
 }

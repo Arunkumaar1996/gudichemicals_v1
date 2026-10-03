@@ -13,6 +13,8 @@ class ExpenseController extends Controller
 {
     public function index(Request $request)
     {
+        abort_if(!auth()->user()->can('expenses.manage'), 403, 'Access Denied: You do not have permission to view operating expenses.');
+
         $query = Expense::with(['category', 'creator'])
             ->latest('expense_date');
 
@@ -37,12 +39,15 @@ class ExpenseController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->can('expenses.manage'), 403, 'Access Denied: You do not have permission to log operating expenses.');
+
         $categories = ExpenseCategory::all();
         return view('finance.expenses.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->can('expenses.manage'), 403, 'Access Denied: You do not have permission to record operating expenses.');
         $validated = $request->validate([
             'expense_category_id' => ['required', 'exists:expense_categories,id'],
             'expense_date' => ['required', 'date'],

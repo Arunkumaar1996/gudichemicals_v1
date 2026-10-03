@@ -19,6 +19,8 @@ class PurchaseOrderController extends Controller
 
     public function index()
     {
+        abort_if(!auth()->user()->can('purchases.view'), 403, 'Access Denied: You do not have permission to view chemical purchase orders.');
+
         $orders = PurchaseOrder::with(['vendor', 'warehouse', 'creator', 'items.product'])
             ->latest('order_date')
             ->paginate(15);
@@ -28,6 +30,8 @@ class PurchaseOrderController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->can('purchases.create'), 403, 'Access Denied: You do not have permission to create purchase orders.');
+
         $vendors = Vendor::where('is_active', true)->orderBy('name')->get();
         $warehouses = Warehouse::where('is_active', true)->get();
         $products = Product::where('is_active', true)->with('unit')->orderBy('name')->get();
@@ -37,6 +41,7 @@ class PurchaseOrderController extends Controller
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->can('purchases.create'), 403, 'Access Denied: You do not have permission to save purchase orders.');
         $validated = $request->validate([
             'vendor_id' => ['required', 'exists:vendors,id'],
             'warehouse_id' => ['required', 'exists:warehouses,id'],
@@ -67,12 +72,16 @@ class PurchaseOrderController extends Controller
 
     public function show(PurchaseOrder $order)
     {
+        abort_if(!auth()->user()->can('purchases.view'), 403, 'Access Denied: You do not have permission to view purchase order details.');
+
         $order->load(['vendor', 'warehouse', 'items.product', 'items.unit', 'goodsReceipts']);
         return view('purchases.orders.show', compact('order'));
     }
 
     public function approve(PurchaseOrder $order)
     {
+        abort_if(!auth()->user()->can('purchases.approve'), 403, 'Access Denied: You do not have permission to authorize or approve purchase orders.');
+
         if ($order->status === 'draft') {
             $order->status = 'approved';
             $order->approved_by = auth()->id();

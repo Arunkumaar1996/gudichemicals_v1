@@ -23,6 +23,8 @@ class ReportController extends Controller
      */
     public function sales(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.sales'), 403, 'Access Denied: You do not have permission to view Sales Registers and Revenue Reports.');
+
         $fromDate = $request->get('from_date', now()->startOfMonth()->toDateString());
         $toDate = $request->get('to_date', now()->toDateString());
 
@@ -70,6 +72,8 @@ class ReportController extends Controller
      */
     public function gst(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.financial') && !auth()->user()->can('reports.gst'), 403, 'Access Denied: You do not have permission to view GSTR-1 Tax Reports.');
+
         $fromDate = $request->get('from_date', now()->startOfMonth()->toDateString());
         $toDate = $request->get('to_date', now()->toDateString());
 
@@ -119,6 +123,8 @@ class ReportController extends Controller
      */
     public function receivables(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.financial') && !auth()->user()->can('reports.sales'), 403, 'Access Denied: You do not have permission to view Customer Receivables & Aging Reports.');
+
         $customers = Customer::withSum('salesInvoices as total_billed', 'grand_total')
             ->get()
             ->map(function ($c) {
@@ -156,6 +162,8 @@ class ReportController extends Controller
      */
     public function payables(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.financial') && !auth()->user()->can('purchases.view'), 403, 'Access Denied: You do not have permission to view Vendor Payables Reports.');
+
         $vendors = Vendor::all()->map(function ($v) {
             $totalPurchased = (float)DB::table('supplier_invoices')
                 ->where('vendor_id', $v->id)
@@ -192,6 +200,8 @@ class ReportController extends Controller
      */
     public function collections(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.sales') && !auth()->user()->can('reports.financial') && !auth()->user()->can('payments.collect'), 403, 'Access Denied: You do not have permission to view Daily Collections Registers.');
+
         $fromDate = $request->get('from_date', now()->subDays(7)->toDateString());
         $toDate = $request->get('to_date', now()->toDateString());
 
@@ -222,6 +232,8 @@ class ReportController extends Controller
      */
     public function inventory(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.inventory'), 403, 'Access Denied: You do not have permission to view Inventory Valuation Reports.');
+
         $products = Product::where('is_active', true)
             ->with(['unit', 'category', 'stockBalances.warehouse', 'stockBalances.batch'])
             ->get();
@@ -251,6 +263,8 @@ class ReportController extends Controller
      */
     public function production(Request $request)
     {
+        abort_if(!auth()->user()->can('reports.production'), 403, 'Access Denied: You do not have permission to view Production Yield & Costing Reports.');
+
         $batches = ProductionOrder::with(['outputProduct.unit', 'formula', 'operator'])
             ->latest('order_date')
             ->paginate(20);

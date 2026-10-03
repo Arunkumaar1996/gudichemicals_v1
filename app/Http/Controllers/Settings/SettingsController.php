@@ -10,12 +10,15 @@ class SettingsController extends Controller
 {
     public function index()
     {
+        abort_if(!auth()->user()->can('settings.update'), 403, 'Access Denied: You do not have the required "settings.update" permission to view or modify Company Settings.');
+
         $setting = CompanySetting::current();
         return view('settings.index', compact('setting'));
     }
 
     public function update(Request $request)
     {
+        abort_if(!auth()->user()->can('settings.update'), 403, 'Access Denied: You do not have permission to update Company Profile or Tax Settings.');
         $validated = $request->validate([
             'company_name' => ['required', 'string', 'max:150'],
             'trade_name' => ['nullable', 'string', 'max:150'],

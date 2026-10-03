@@ -18,6 +18,8 @@ class ProductionOrderController extends Controller
 
     public function index()
     {
+        abort_if(!auth()->user()->can('production.view') && !auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to view chemical production orders & batch logs.');
+
         $orders = ProductionOrder::with(['formula', 'outputProduct', 'targetWarehouse', 'operator'])
             ->latest('order_date')
             ->paginate(15);
@@ -27,6 +29,8 @@ class ProductionOrderController extends Controller
 
     public function create()
     {
+        abort_if(!auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to initiate new chemical production batches.');
+
         $formulas = Formula::where('is_active', true)->where('is_approved', true)
             ->with(['product', 'outputUnit'])
             ->get();
@@ -37,6 +41,7 @@ class ProductionOrderController extends Controller
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to launch production batches.');
         $validated = $request->validate([
             'formula_id' => ['required', 'exists:formulas,id'],
             'planned_qty' => ['required', 'numeric', 'gt:0'],
@@ -60,6 +65,8 @@ class ProductionOrderController extends Controller
 
     public function show(ProductionOrder $order)
     {
+        abort_if(!auth()->user()->can('production.view') && !auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to view chemical batch details.');
+
         $order->load([
             'formula.outputUnit',
             'outputProduct.unit',
@@ -77,6 +84,8 @@ class ProductionOrderController extends Controller
 
     public function recordQc(Request $request, ProductionOrder $order)
     {
+        abort_if(!auth()->user()->can('production.finalize') && !auth()->user()->can('production.create'), 403, 'Access Denied: You do not have permission to record QC lab parameters.');
+
         $validated = $request->validate([
             'parameter_name' => ['required', 'string', 'max:100'],
             'standard_specification' => ['required', 'string', 'max:150'],
@@ -99,6 +108,7 @@ class ProductionOrderController extends Controller
 
     public function finalize(Request $request, ProductionOrder $order)
     {
+        abort_if(!auth()->user()->can('production.finalize'), 403, 'Access Denied: You do not have permission to finalize chemical batches and credit inventory.');
         $validated = $request->validate([
             'actual_qty' => ['required', 'numeric', 'gt:0'],
             'packaging_cost' => ['nullable', 'numeric', 'min:0'],

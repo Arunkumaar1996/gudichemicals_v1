@@ -191,3 +191,15 @@ Route::middleware('auth')->group(function () {
     // App User Guide & Training Center
     Route::get('/guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('guide.index');
 });
+
+// HTTP Status Error Screen Previews & Testing (Available for testing / demo)
+Route::get('/errors/{code}', function ($code) {
+    $allowed = [401, 403, 404, 419, 429, 500, 503];
+    $code = (int)$code;
+    if (!in_array($code, $allowed)) {
+        abort(404);
+    }
+    return response()->view("errors.{$code}", [
+        'exception' => new \Symfony\Component\HttpKernel\Exception\HttpException($code, "Previewing HTTP {$code} error screen UI in testing mode."),
+    ], $code);
+})->name('errors.preview');

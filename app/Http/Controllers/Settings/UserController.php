@@ -18,6 +18,8 @@ class UserController extends Controller
 
     public function index()
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have the required "users.manage" permission to view or manage staff accounts.');
+
         $currentUser = auth()->user();
         $isSuperAdmin = $this->isSuperAdmin($currentUser);
 
@@ -41,6 +43,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to create staff user accounts.');
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -72,6 +76,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to update staff user accounts.');
+
         if ($this->isSuperAdmin($user) && !$this->isSuperAdmin(auth()->user())) {
             return back()->with('error', 'Super Admin developer account cannot be modified by other users.');
         }
@@ -111,6 +117,8 @@ class UserController extends Controller
 
     public function toggle(User $user)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to change staff account status.');
+
         if ($this->isSuperAdmin($user)) {
             return back()->with('error', 'Super Admin developer account cannot be deactivated.');
         }
@@ -127,6 +135,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        abort_if(!auth()->user()->can('users.manage'), 403, 'Access Denied: You do not have permission to remove staff accounts.');
+
         if ($this->isSuperAdmin($user)) {
             return back()->with('error', 'Super Admin developer account is protected and cannot be deleted.');
         }
