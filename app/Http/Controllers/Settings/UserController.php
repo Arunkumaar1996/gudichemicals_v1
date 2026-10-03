@@ -23,20 +23,15 @@ class UserController extends Controller
         $currentUser = auth()->user();
         $isSuperAdmin = $this->isSuperAdmin($currentUser);
 
-        $usersQuery = User::with('roles');
-        if (!$isSuperAdmin) {
-            // Completely hide the Developer / Super Admin account from regular clients/users
-            $usersQuery->where('role', '!=', 'Super Admin')
-                       ->where('email', '!=', 'admin@gudichemicals.com');
-        }
-        $users = $usersQuery->get();
+        // Always hide the developer Super Admin account completely from the staff users directory
+        $users = User::with('roles')
+            ->where('role', '!=', 'Super Admin')
+            ->where('email', '!=', 'admin@gudichemicals.com')
+            ->orderBy('name')
+            ->get();
 
-        $rolesQuery = Role::query();
-        if (!$isSuperAdmin) {
-            // Hide Super Admin role from dropdown if not superadmin
-            $rolesQuery->where('name', '!=', 'Super Admin');
-        }
-        $roles = $rolesQuery->get();
+        // Always hide Super Admin from role selection dropdowns
+        $roles = Role::where('name', '!=', 'Super Admin')->orderBy('name')->get();
 
         return view('settings.users.index', compact('users', 'roles', 'isSuperAdmin'));
     }

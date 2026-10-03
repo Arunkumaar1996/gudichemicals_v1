@@ -414,7 +414,9 @@ class ErpUiAndEndpointsTest extends TestCase
         $response = $this->actingAs($this->admin)->get('/roles');
         $response->assertStatus(200);
         $response->assertSee('Roles & Permissions Management');
-        $response->assertSee('Super Admin');
+
+        // Super Admin role is completely excluded from the roles & permissions matrix list
+        $this->assertFalse($response->viewData('roles')->pluck('name')->contains('Super Admin'));
 
         $storeResponse = $this->actingAs($this->admin)->post('/roles', [
             'name' => 'Lab Chemist',
@@ -445,12 +447,21 @@ class ErpUiAndEndpointsTest extends TestCase
         $response->assertStatus(200);
         $response->assertDontSee('admin@gudichemicals.com');
         $response->assertSee('cashier@gudichemicals.com');
+        $this->assertFalse($response->viewData('users')->pluck('email')->contains('admin@gudichemicals.com'));
+        $this->assertFalse($response->viewData('roles')->pluck('name')->contains('Super Admin'));
 
-        // When Super Admin views /users, Super Admin IS visible
+        // Super Admin developer account is completely excluded from the users list for everyone
         $adminResponse = $this->actingAs($this->admin)->get('/users');
         $adminResponse->assertStatus(200);
-        $adminResponse->assertSee('admin@gudichemicals.com');
-        $adminResponse->assertSee('Developer Account');
+        $this->assertFalse($adminResponse->viewData('users')->pluck('email')->contains('admin@gudichemicals.com'));
+        $this->assertFalse($adminResponse->viewData('users')->pluck('role')->contains('Super Admin'));
+        $this->assertFalse($adminResponse->viewData('roles')->pluck('name')->contains('Super Admin'));
+
+        // Non-superadmin visiting /roles also does NOT see Super Admin anywhere in HTML
+        $rolesResponse = $this->actingAs($cashier)->get('/roles');
+        $rolesResponse->assertStatus(200);
+        $rolesResponse->assertDontSee('Super Admin');
+        $this->assertFalse($rolesResponse->viewData('roles')->pluck('name')->contains('Super Admin'));
     }
 
     public function test_superadmin_account_cannot_be_deleted(): void

@@ -100,12 +100,11 @@ class RoleController extends Controller
         $currentUser = auth()->user();
         $isSuperAdmin = $this->isSuperAdmin($currentUser);
 
-        $rolesQuery = Role::with(['permissions', 'users']);
-        if (!$isSuperAdmin) {
-            // Hide Super Admin role from regular client/sub-admin view
-            $rolesQuery->where('name', '!=', 'Super Admin');
-        }
-        $roles = $rolesQuery->get();
+        // Always hide Super Admin role completely from the roles & permissions matrix list
+        $roles = Role::with(['permissions', 'users'])
+            ->where('name', '!=', 'Super Admin')
+            ->orderBy('name')
+            ->get();
 
         $permissionGroups = self::getPermissionGroups();
         $allPermissions = Permission::all();
