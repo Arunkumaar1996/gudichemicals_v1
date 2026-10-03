@@ -241,7 +241,7 @@
                     <h6 class="fw-bold mb-0 text-white"><i class="fa-solid fa-book-open-reader me-2 text-info"></i> Training Playlist</h6>
                     <small class="text-white-50" style="font-size: 0.70rem;">Training Playlist & Module Manuals</small>
                 </div>
-                <span class="badge bg-primary text-white" style="font-size: 0.65rem;">11 Modules</span>
+                <span class="badge bg-primary text-white" style="font-size: 0.65rem;">Workflow + 11 Modules</span>
             </div>
 
             <!-- Search Filter for Playlist -->
@@ -254,7 +254,16 @@
 
             <!-- Playlist Lessons -->
             <div class="playlist-nav-items" id="playlistItemsContainer">
-                <a href="#modulePos" class="playlist-menu-item active" onclick="activatePlaylistItem(this)">
+                <a href="#moduleWorkflow" class="playlist-menu-item active" onclick="activatePlaylistItem(this)">
+                    <span class="playlist-item-num bg-primary text-white"><i class="fa-solid fa-diagram-project" style="font-size: 0.65rem;"></i></span>
+                    <div class="overflow-hidden flex-grow-1">
+                        <div class="text-truncate fw-bold" style="font-size: 0.80rem;">Full ERP Workflow</div>
+                        <small class="text-muted d-block text-truncate" style="font-size: 0.68rem;">End-to-end chemical enterprise lifecycle</small>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-muted small ms-1"></i>
+                </a>
+
+                <a href="#modulePos" class="playlist-menu-item" onclick="activatePlaylistItem(this)">
                     <span class="playlist-item-num">1</span>
                     <div class="overflow-hidden flex-grow-1">
                         <div class="text-truncate fw-bold" style="font-size: 0.80rem;">Module 1: POS Fast Billing Desk</div>
@@ -358,6 +367,214 @@
 
     <!-- RIGHT CONTENT: Detailed Screen-wise Visual Walkthrough Modules -->
     <div class="col-lg-8 col-xl-8.5">
+
+        <!-- ============================================================ -->
+        <!-- MASTER SECTION: Full Application Work Flow                   -->
+        <!-- ============================================================ -->
+        <div class="training-module-card border-primary shadow-sm" id="moduleWorkflow">
+            <div class="training-module-header bg-primary bg-opacity-10 border-bottom border-primary border-opacity-25">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary p-2 rounded-3 text-white"><i class="fa-solid fa-diagram-project fa-lg"></i></span>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <h5 class="fw-bold text-dark mb-0">Full Application Workflow — Complete End-to-End Enterprise Lifecycle</h5>
+                            <span class="badge bg-primary text-white" style="font-size: 0.65rem;">End-to-End Architecture</span>
+                        </div>
+                        <small class="text-muted">Interactive visual roadmap connecting Master Data, Purchasing & Tanker GRN, Reactor Compounding, Laboratory QC, Multi-Lot POS Billing, and GSTR-1 Tax Filing</small>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" onclick="window.print()">
+                    <i class="fa-solid fa-print me-1"></i> Print Roadmap
+                </button>
+            </div>
+
+            <div class="card-body p-3 p-lg-4">
+                <!-- Visual Pipeline Cards Grid -->
+                <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-arrows-split-up-and-left text-primary me-1.5"></i> 6-Stage Chemical Business Operational Pipeline</h6>
+                <p class="text-muted small mb-3">Every operation in Gudi Chemicals ERP is interconnected. Data created in procurement seamlessly flows into plant production, warehouse lot tracking, POS billing, and government tax returns:</p>
+
+                <!-- 6 STAGES RESPONSIVE GRID -->
+                <div class="row g-2 mb-4">
+                    <!-- Stage 1 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="p-2.5 rounded border bg-light h-100 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-dark"><span class="callout-pill">Phase 1</span> Master Setup</span>
+                                <small class="text-muted fw-bold">Step 1</small>
+                            </div>
+                            <strong class="d-block text-dark small mb-1"><i class="fa-solid fa-database text-primary me-1"></i> Master Data & BOM</strong>
+                            <p class="text-muted mb-2" style="font-size: 0.72rem;">
+                                Configure raw chemicals, finished SKUs, UOM conversions (Drums to Liters), customer GSTINs, and approved Bill of Materials (BOM) formulas.
+                            </p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{{ route('masters.products.index') }}" class="badge bg-white text-dark border text-decoration-none">Products</a>
+                                <a href="{{ route('production.formulas.index') }}" class="badge bg-white text-dark border text-decoration-none">BOM Formulas</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 2 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="p-2.5 rounded border bg-light h-100 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-danger"><span class="callout-pill">Phase 2</span> Procurement</span>
+                                <small class="text-muted fw-bold">Step 2</small>
+                            </div>
+                            <strong class="d-block text-dark small mb-1"><i class="fa-solid fa-truck-ramp-box text-danger me-1"></i> PO & Inward GRN</strong>
+                            <p class="text-muted mb-2" style="font-size: 0.72rem;">
+                                Raise Purchase Order to chemical suppliers. At the factory gate, generate Goods Receipt Note (GRN) with supplier batch #, expiry date & COA purity.
+                            </p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{{ route('purchases.orders.index') }}" class="badge bg-white text-dark border text-decoration-none">Purchase Orders</a>
+                                <a href="{{ route('purchases.grn.index') }}" class="badge bg-white text-dark border text-decoration-none">GRN Inward</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 3 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="p-2.5 rounded border bg-light h-100 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-info text-dark"><span class="callout-pill">Phase 3</span> Compounding</span>
+                                <small class="text-muted fw-bold">Step 3</small>
+                            </div>
+                            <strong class="d-block text-dark small mb-1"><i class="fa-solid fa-flask-vial text-info me-1"></i> Reactor Batch & QC</strong>
+                            <p class="text-muted mb-2" style="font-size: 0.72rem;">
+                                Scale BOM to target volume. Reactor compounding executes. Laboratory chemist records pH, Viscosity & SG assays before lot finalization.
+                            </p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{{ route('production.orders.index') }}" class="badge bg-white text-dark border text-decoration-none">Batch Orders</a>
+                                <span class="badge bg-white text-dark border">Lab QC Tests</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 4 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="p-2.5 rounded border bg-light h-100 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-success"><span class="callout-pill">Phase 4</span> Sales & POS</span>
+                                <small class="text-muted fw-bold">Step 4</small>
+                            </div>
+                            <strong class="d-block text-dark small mb-1"><i class="fa-solid fa-bolt text-success me-1"></i> Multi-Lot POS Billing</strong>
+                            <p class="text-muted mb-2" style="font-size: 0.72rem;">
+                                Scan barcode, choose specific batch or Auto-FIFO, toggle Retail/Wholesale tier, auto-split CGST+SGST/IGST, and tender payment in sub-seconds.
+                            </p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{{ route('pos.index') }}" class="badge bg-white text-dark border text-decoration-none">POS Station</a>
+                                <a href="{{ route('invoices.index') }}" class="badge bg-white text-dark border text-decoration-none">Tax Invoices</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 5 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="p-2.5 rounded border bg-light h-100 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-secondary"><span class="callout-pill">Phase 5</span> Inventory</span>
+                                <small class="text-muted fw-bold">Step 5</small>
+                            </div>
+                            <strong class="d-block text-dark small mb-1"><i class="fa-solid fa-boxes-stacked text-secondary me-1"></i> Reorders & Adjustments</strong>
+                            <p class="text-muted mb-2" style="font-size: 0.72rem;">
+                                Live godown ledger logs every gram. Automatic low-stock reorder thresholds alert the dashboard. Log evaporation shrinkage or customer returns.
+                            </p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{{ route('inventory.index') }}" class="badge bg-white text-dark border text-decoration-none">Stock Ledger</a>
+                                <a href="{{ route('returns.index') }}" class="badge bg-white text-dark border text-decoration-none">Returns</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 6 -->
+                    <div class="col-md-4 col-sm-6">
+                        <div class="p-2.5 rounded border bg-light h-100 position-relative">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-primary"><span class="callout-pill">Phase 6</span> Accounting</span>
+                                <small class="text-muted fw-bold">Step 6</small>
+                            </div>
+                            <strong class="d-block text-dark small mb-1"><i class="fa-solid fa-file-invoice-dollar text-primary me-1"></i> GSTR-1, Aging & Audits</strong>
+                            <p class="text-muted mb-2" style="font-size: 0.72rem;">
+                                Reconcile daily cash and UPI collections, review Accounts Receivable / Payable aging, generate GSTR-1 tax summaries, and 1-click DomPDF exports.
+                            </p>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="{{ route('reports.gst') }}" class="badge bg-white text-dark border text-decoration-none">GSTR-1 Tax</a>
+                                <a href="{{ route('reports.collections') }}" class="badge bg-white text-dark border text-decoration-none">Collections</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- END-TO-END CHEMICAL JOURNEY WALKTHROUGH -->
+                <div class="border rounded p-3 bg-white mb-3 shadow-sm">
+                    <h6 class="fw-bold text-dark mb-2">
+                        <i class="fa-solid fa-route text-success me-1.5"></i> Practical Chemical Lifecycle: Tracing 1 Batch from Tanker Inward to Customer Tax Invoice
+                    </h6>
+                    <p class="small text-muted mb-3">
+                        Here is an exact practical example of how data flows through all ERP screens when manufacturing and distributing <strong>Industrial Degreaser</strong>:
+                    </p>
+
+                    <div class="workflow-timeline ps-3 border-start border-3 border-primary ms-2 mb-2">
+                        <div class="mb-3 position-relative ps-2">
+                            <span class="badge bg-primary px-2 py-0.5 mb-1" style="font-size: 0.70rem;">1. Tanker Arrival & GRN Inward</span>
+                            <p class="small text-muted mb-0">
+                                Chemical supplier delivers 1,000 Liters of Caustic Soda Lye. Storekeeper opens <strong>Purchasing > Goods Receipt Note (GRN)</strong> (<a href="{{ route('purchases.grn.create') }}">create GRN</a>), inputs supplier lot <code>GACL-984</code>, and attaches COA. Stock is auto-inwarded to Raw Material Bay under batch <code>LOT-CS-2026-01</code>.
+                            </p>
+                        </div>
+
+                        <div class="mb-3 position-relative ps-2">
+                            <span class="badge bg-info text-dark px-2 py-0.5 mb-1" style="font-size: 0.70rem;">2. Production Compounding & Proportional Scaling</span>
+                            <p class="small text-muted mb-0">
+                                Production Manager opens <strong>Manufacturing > Batch Orders</strong> (<a href="{{ route('production.orders.create') }}">create batch</a>), picks formula <em>Industrial Degreaser High-Foam</em>, and inputs <code>500 L</code> target volume. The system auto-calculates 75 KG Caustic Soda + 75 KG SLES + 350 L DM Water and reserves stock.
+                            </p>
+                        </div>
+
+                        <div class="mb-3 position-relative ps-2">
+                            <span class="badge bg-warning text-dark px-2 py-0.5 mb-1" style="font-size: 0.70rem;">3. Laboratory Quality Control (QC) & Finalization</span>
+                            <p class="small text-muted mb-0">
+                                After reactor mixing, Quality Chemist draws a sample, records pH = 12.1 and Viscosity = 280 cP in the batch QC modal, and clicks <strong>"Finalize Batch"</strong>. Raw chemicals are deducted from inventory, and 500 L of Finished Goods is inwarded under new batch <code>LOT-DG-2026-08</code>.
+                            </p>
+                        </div>
+
+                        <div class="mb-3 position-relative ps-2">
+                            <span class="badge bg-success px-2 py-0.5 mb-1" style="font-size: 0.70rem;">4. POS Fast Billing & Batch Dispatch</span>
+                            <p class="small text-muted mb-0">
+                                Apex Dyeing Mills orders 50 L. Cashier opens <strong>POS Desk</strong> (<a href="{{ route('pos.index') }}">launch POS</a>), scans barcode, selects batch <code>LOT-DG-2026-08</code>, enters customer GSTIN <code>27AAACP9876C1ZV</code>, and presses <span class="keyboard-shortcut-pill">F9</span>. Customer pays via UPI QR (UTR entered). Bill is settled in 10 seconds.
+                            </p>
+                        </div>
+
+                        <div class="position-relative ps-2">
+                            <span class="badge bg-dark px-2 py-0.5 mb-1" style="font-size: 0.70rem;">5. Real-Time Stock Deduction & GSTR-1 Tax Record</span>
+                            <p class="small text-muted mb-0">
+                                The system immediately decrements 50 L from batch <code>LOT-DG-2026-08</code> (leaving 450 L). The transaction logs to the Stock Movement Ledger, prints an A4 Tax Invoice, and records the 18% GST (9% CGST + 9% SGST) in the monthly <strong>GSTR-1 Report</strong> (<a href="{{ route('reports.gst') }}">view GSTR-1</a>).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROLE MATRIX -->
+                <div class="p-3 bg-light rounded border">
+                    <h6 class="fw-bold text-dark mb-1"><i class="fa-solid fa-users text-primary me-1"></i> Who Does What? Department Responsibilities Across the Workflow</h6>
+                    <div class="row g-2 pt-1" style="font-size: 0.75rem;">
+                        <div class="col-md-3 col-6">
+                            <strong>Plant & QC Chemist:</strong>
+                            <div class="text-muted">Formulas (BOM), Compounding Batches, Laboratory Assays, Lot Finalization.</div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <strong>Storekeeper:</strong>
+                            <div class="text-muted">Tanker Weighing, GRN Inward, Stock Adjustments, Spillage & Shrinkage entries.</div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <strong>Cashier / Sales:</strong>
+                            <div class="text-muted">Fast POS Billing, Barcode Scanning, Multi-Lot FIFO selection, Cash/UPI tender.</div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <strong>Accountant / Admin:</strong>
+                            <div class="text-muted">Collections Reconciliation, GSTR-1 Filings, Aging Debtors, DomPDF Exports.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- ============================================================ -->
         <!-- MODULE 1: POS Fast Billing Desk & Cash Station               -->
