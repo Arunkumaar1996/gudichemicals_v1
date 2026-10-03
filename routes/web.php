@@ -179,4 +179,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/{user}/toggle', [UserController::class, 'toggle'])->name('toggle');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
+
+    // App User Guide & Training Center
+    Route::get('/guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('guide.index');
 });

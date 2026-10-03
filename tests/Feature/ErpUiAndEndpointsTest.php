@@ -399,4 +399,13 @@ class ErpUiAndEndpointsTest extends TestCase
             $this->assertNotEmpty($response->getContent());
         }
     }
+
+    public function test_user_guide_page_renders_successfully(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/guide');
+        $response->assertStatus(200);
+        $response->assertSee('User Guide & Video Training', false);
+        $response->assertSee('Interactive Video Training Hub');
+        $response->assertSee('Module 1: POS Fast Billing Desk');
+    }
 }
