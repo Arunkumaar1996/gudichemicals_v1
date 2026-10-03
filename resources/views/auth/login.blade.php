@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Workstation Sign In — Gudi Chemicals ERP</title>
+    <title>Sign In — Gudi Chemicals ERP</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,7 +22,6 @@
             --gudi-primary-light: #e0f2fe;
             --gudi-secondary: #0d9488;
             --gudi-accent: #f59e0b;
-            --gudi-card-bg: rgba(255, 255, 255, 0.95);
         }
 
         * {
@@ -30,285 +29,411 @@
         }
 
         html, body {
-            min-height: 100vh;
+            height: 100%;
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #060d1a 0%, #0b172a 40%, #002b4d 100%);
+            background-color: #ffffff;
             color: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Ambient Geometric Chemical Matrix Background */
-        .ambient-grid {
-            position: fixed;
+        /* Full Screen Split Container */
+        .auth-split-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* -------------------------------------------------------------
+         * LEFT PANEL: Enterprise Hero & Visual Showcase
+         * ------------------------------------------------------------- */
+        .auth-showcase-panel {
+            flex: 1.15;
+            background: linear-gradient(145deg, #061124 0%, #0b1a36 45%, #003660 100%);
+            color: #ffffff;
+            padding: 3.5rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Ambient Glowing Geometric Matrix */
+        .showcase-grid-matrix {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
+            right: 0;
+            bottom: 0;
             background-image: 
-                radial-gradient(rgba(0, 163, 255, 0.12) 1.5px, transparent 1.5px),
-                radial-gradient(rgba(13, 148, 136, 0.08) 1.5px, transparent 1.5px);
-            background-size: 36px 36px;
-            background-position: 0 0, 18px 18px;
-            opacity: 0.9;
-        }
-
-        /* Glowing Ambient Spheres */
-        .ambient-orb-1 {
-            position: fixed;
-            top: -15%;
-            right: 15%;
-            width: 520px;
-            height: 520px;
-            background: radial-gradient(circle, rgba(0, 90, 156, 0.35) 0%, rgba(0, 90, 156, 0) 70%);
-            border-radius: 50%;
-            filter: blur(60px);
+                radial-gradient(rgba(56, 189, 248, 0.15) 1.5px, transparent 1.5px),
+                radial-gradient(rgba(13, 148, 136, 0.1) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            opacity: 0.65;
             pointer-events: none;
-            z-index: 0;
-            animation: orbFloat 10s ease-in-out infinite alternate;
+            z-index: 1;
         }
 
-        .ambient-orb-2 {
-            position: fixed;
-            bottom: -15%;
-            left: 10%;
+        .showcase-orb-1 {
+            position: absolute;
+            top: -10%;
+            right: -10%;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(13, 148, 136, 0.28) 0%, rgba(13, 148, 136, 0) 70%);
-            border-radius: 50%;
-            filter: blur(60px);
-            pointer-events: none;
-            z-index: 0;
-            animation: orbFloat 12s ease-in-out infinite alternate-reverse;
-        }
-
-        .ambient-orb-3 {
-            position: fixed;
-            top: 40%;
-            left: -10%;
-            width: 380px;
-            height: 380px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0) 70%);
+            background: radial-gradient(circle, rgba(0, 90, 156, 0.45) 0%, rgba(0, 90, 156, 0) 70%);
             border-radius: 50%;
             filter: blur(70px);
             pointer-events: none;
-            z-index: 0;
-            animation: orbFloat 14s ease-in-out infinite alternate;
-        }
-
-        /* Container Layout */
-        .login-wrapper {
-            position: relative;
             z-index: 1;
-            width: 100%;
-            max-width: 460px;
-            padding: 1.5rem 1rem;
-            margin: auto;
+            animation: orbFloat 10s ease-in-out infinite alternate;
         }
 
-        /* Main Login Card */
-        .login-glass-card {
-            background: var(--gudi-card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 22px;
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.55),
-                        0 18px 36px -18px rgba(0, 0, 0, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            overflow: hidden;
-            animation: cardEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .showcase-orb-2 {
+            position: absolute;
+            bottom: -15%;
+            left: -10%;
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.35) 0%, rgba(13, 148, 136, 0) 70%);
+            border-radius: 50%;
+            filter: blur(70px);
+            pointer-events: none;
+            z-index: 1;
+            animation: orbFloat 12s ease-in-out infinite alternate-reverse;
         }
 
-        /* Card Header with Brand Aesthetics */
-        .login-card-header {
-            padding: 2.25rem 2rem 1.5rem 2rem;
-            text-align: center;
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-            border-bottom: 1px solid #e2e8f0;
-            position: relative;
-        }
-
-        /* 3D-Styled Animated Brand Logo */
-        .brand-logo-container {
-            position: relative;
-            width: 82px;
-            height: 82px;
-            margin: 0 auto 1.15rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .brand-logo-box {
-            width: 72px;
-            height: 72px;
-            background: linear-gradient(135deg, #005a9c 0%, #003e6b 45%, #0d9488 100%);
-            color: #ffffff;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.1rem;
-            box-shadow: 0 12px 24px -6px rgba(0, 90, 156, 0.45),
-                        inset 0 1px 1px rgba(255, 255, 255, 0.6);
-            border: 2px solid rgba(255, 255, 255, 0.4);
+        .showcase-content {
             position: relative;
             z-index: 2;
+        }
+
+        /* Top Brand Badge in Showcase */
+        .showcase-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-emblem-box {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #0284c7 0%, #005a9c 60%, #0d9488 100%);
+            color: #ffffff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            box-shadow: 0 8px 20px rgba(0, 90, 156, 0.35),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            position: relative;
             animation: logoBob 4s ease-in-out infinite;
         }
 
-        .brand-logo-box i {
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
-        }
-
-        .brand-flask-bubble {
+        .brand-emblem-sparkle {
             position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            top: -3px;
+            right: -3px;
+            width: 16px;
+            height: 16px;
+            background: #f59e0b;
             color: #ffffff;
-            font-size: 0.68rem;
+            border-radius: 50%;
+            font-size: 0.55rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #ffffff;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-            animation: pulseWarning 2s infinite;
-            z-index: 3;
+            border: 1.5px solid #061124;
+            animation: pulseGlow 2s infinite;
         }
 
-        .brand-halo-ring {
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border-radius: 26px;
-            border: 2px dashed rgba(0, 90, 156, 0.35);
-            animation: rotateHalo 22s linear infinite;
-            z-index: 1;
-        }
-
-        .brand-title {
-            font-size: 1.35rem;
+        .brand-text-block h5 {
+            font-size: 1.15rem;
             font-weight: 800;
             letter-spacing: 0.04em;
-            color: #0b1324;
-            margin-bottom: 0.25rem;
-        }
-
-        .brand-subtitle {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-            color: #0d9488;
             margin: 0;
+            color: #ffffff;
         }
 
-        /* Card Body */
-        .login-card-body {
-            padding: 2rem;
+        .brand-text-block small {
+            font-size: 0.70rem;
+            color: #38bdf8;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
-        /* Custom Input Groups */
-        .form-label {
+        /* Showcase Headline & Subtitle */
+        .showcase-headline {
+            font-size: 2.15rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .showcase-headline span.gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .showcase-subtitle {
+            font-size: 0.92rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            max-width: 480px;
+            margin-bottom: 2rem;
+        }
+
+        /* Showcase Feature Cards */
+        .showcase-features-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1.15rem;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            transition: all 0.25s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateX(4px);
+        }
+
+        .feature-icon-pill {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .feature-title {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.15rem;
+        }
+
+        .feature-desc {
+            font-size: 0.74rem;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        /* Showcase Bottom Footer */
+        .showcase-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            color: #64748b;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .compliance-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.65rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 0.70rem;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        /* -------------------------------------------------------------
+         * RIGHT PANEL: Interactive Sign In Form
+         * ------------------------------------------------------------- */
+        .auth-form-panel {
+            flex: 0.85;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2.5rem;
+            position: relative;
+        }
+
+        .auth-form-container {
+            width: 100%;
+            max-width: 420px;
+            animation: cardEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Mobile Brand Header */
+        .mobile-brand-header {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Form Top Section */
+        .form-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 0.25rem 0.65rem;
+            border-radius: 50rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .form-header-badge .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+            display: inline-block;
+            animation: blinkDot 1.8s infinite;
+        }
+
+        .form-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #0b1324;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 1.85rem;
+            line-height: 1.5;
+        }
+
+        /* Custom Form Inputs */
+        .form-label-custom {
             font-size: 0.80rem;
             font-weight: 700;
             color: #334155;
             margin-bottom: 0.45rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 0.4rem;
         }
 
-        .input-group-custom {
+        .input-wrapper {
             position: relative;
             display: flex;
-            align-items: stretch;
-            border: 1px solid #cbd5e1;
+            align-items: center;
+            border: 1.5px solid #cbd5e1;
             border-radius: 10px;
             background: #ffffff;
             transition: all 0.2s ease-in-out;
             overflow: hidden;
+            margin-bottom: 1.25rem;
         }
 
-        .input-group-custom:focus-within {
+        .input-wrapper:focus-within {
             border-color: #005a9c;
-            box-shadow: 0 0 0 3.5px rgba(0, 90, 156, 0.16);
-            background: #ffffff;
+            box-shadow: 0 0 0 3.5px rgba(0, 90, 156, 0.15);
         }
 
-        .input-group-custom.is-invalid {
+        .input-wrapper.is-invalid {
             border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
         }
 
-        .input-group-icon {
+        .input-prefix-icon {
+            width: 44px;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 44px;
-            color: #64748b;
+            color: #94a3b8;
             font-size: 0.95rem;
             background: #f8fafc;
             border-right: 1px solid #e2e8f0;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
         }
 
-        .input-group-custom:focus-within .input-group-icon {
+        .input-wrapper:focus-within .input-prefix-icon {
             color: #005a9c;
             background: #f0f7ff;
         }
 
-        .form-control-custom {
+        .input-field {
+            flex: 1;
             border: none;
-            padding: 0.68rem 0.85rem;
+            outline: none;
+            padding: 0.72rem 0.85rem;
             font-size: 0.88rem;
             font-weight: 500;
             color: #0f172a;
-            width: 100%;
-            outline: none;
             background: transparent;
+            font-family: inherit;
         }
 
-        .form-control-custom::placeholder {
+        .input-field::placeholder {
             color: #94a3b8;
             font-weight: 400;
         }
 
-        /* Toggle Password View Eye Button */
-        .btn-toggle-password {
-            background: transparent;
+        /* Show/Hide Password Eye Button */
+        .btn-toggle-eye {
             border: none;
-            color: #64748b;
+            background: transparent;
+            color: #94a3b8;
             padding: 0 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: color 0.2s ease;
             outline: none;
         }
 
-        .btn-toggle-password:hover {
+        .btn-toggle-eye:hover {
             color: #005a9c;
-            background: #f8fafc;
         }
 
-        /* Checkbox */
+        /* Checkbox & Help Link */
+        .remember-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.80rem;
+        }
+
         .form-check-input {
             width: 1.1em;
             height: 1.1em;
@@ -322,82 +447,73 @@
         }
 
         .form-check-label {
-            font-size: 0.80rem;
             color: #475569;
             cursor: pointer;
             user-select: none;
             font-weight: 500;
         }
 
+        .support-link {
+            color: #005a9c;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.78rem;
+        }
+
+        .support-link:hover {
+            text-decoration: underline;
+        }
+
         /* Submit Button */
-        .btn-signin-primary {
+        .btn-auth-submit {
             width: 100%;
-            padding: 0.78rem 1.25rem;
+            padding: 0.80rem 1.25rem;
             font-size: 0.90rem;
             font-weight: 700;
-            letter-spacing: 0.02em;
             color: #ffffff;
             background: linear-gradient(135deg, #005a9c 0%, #003e6b 50%, #0d9488 100%);
             border: none;
             border-radius: 10px;
-            box-shadow: 0 6px 18px -2px rgba(0, 90, 156, 0.42);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.65rem;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-signin-primary:hover {
-            background: linear-gradient(135deg, #006ebf 0%, #004c85 50%, #0f766e 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px -2px rgba(0, 90, 156, 0.52);
-            color: #ffffff;
-        }
-
-        .btn-signin-primary:active {
-            transform: translateY(0);
-        }
-
-        /* Security Trust Footer within card */
-        .login-trust-footer {
-            margin-top: 1.5rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid #f1f5f9;
+            box-shadow: 0 8px 20px -4px rgba(0, 90, 156, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            font-size: 0.72rem;
-            color: #64748b;
-            text-align: center;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
         }
 
-        /* Page Outside Footer */
-        .login-outer-footer {
-            margin-top: 1.5rem;
+        .btn-auth-submit:hover {
+            background: linear-gradient(135deg, #0284c7 0%, #004c85 50%, #0f766e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px -4px rgba(0, 90, 156, 0.55);
+            color: #ffffff;
+        }
+
+        .btn-auth-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Bottom Security & Help Footer */
+        .auth-panel-footer {
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #f1f5f9;
             text-align: center;
             font-size: 0.74rem;
             color: #94a3b8;
+            line-height: 1.5;
         }
 
-        .login-outer-footer a {
-            color: #38bdf8;
-            text-decoration: none;
-            font-weight: 600;
+        .auth-panel-footer strong {
+            color: #475569;
         }
 
-        .login-outer-footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Keyframe Animations */
+        /* Keyframes */
         @keyframes cardEntrance {
             from {
                 opacity: 0;
-                transform: translateY(28px) scale(0.97);
+                transform: translateY(20px) scale(0.98);
             }
             to {
                 opacity: 1;
@@ -407,175 +523,264 @@
 
         @keyframes logoBob {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-
-        @keyframes rotateHalo {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            50% { transform: translateY(-5px); }
         }
 
         @keyframes orbFloat {
             from { transform: translateY(0) scale(1); }
-            to { transform: translateY(30px) scale(1.08); }
+            to { transform: translateY(25px) scale(1.06); }
         }
 
-        @keyframes pulseWarning {
+        @keyframes pulseGlow {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.25); }
         }
 
-        @media (max-width: 576px) {
-            .login-card-header {
-                padding: 1.75rem 1.25rem 1.25rem 1.25rem;
+        @keyframes blinkDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 991px) {
+            .auth-showcase-panel {
+                display: none;
             }
-            .login-card-body {
-                padding: 1.5rem 1.25rem;
+            .auth-form-panel {
+                flex: 1;
+                background: #f8fafc;
+                padding: 2.5rem 1.5rem;
             }
-            .brand-logo-container {
-                width: 72px;
-                height: 72px;
+            .auth-form-container {
+                background: #ffffff;
+                padding: 2.25rem 1.75rem;
+                border-radius: 18px;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.1);
             }
-            .brand-logo-box {
-                width: 62px;
-                height: 62px;
-                font-size: 1.8rem;
+            .mobile-brand-header {
+                display: flex;
             }
         }
     </style>
 </head>
 <body>
-    <div class="ambient-grid"></div>
-    <div class="ambient-orb-1"></div>
-    <div class="ambient-orb-2"></div>
-    <div class="ambient-orb-3"></div>
+    <div class="auth-split-wrapper">
+        <!-- -----------------------------------------------------------
+             LEFT PANEL: Enterprise Showcase & Visual Branding (Desktop)
+             ----------------------------------------------------------- -->
+        <aside class="auth-showcase-panel">
+            <div class="showcase-grid-matrix"></div>
+            <div class="showcase-orb-1"></div>
+            <div class="showcase-orb-2"></div>
 
-    <div class="login-wrapper">
-        <div class="login-glass-card">
-            <!-- Header with Attractive Animated Logo -->
-            <div class="login-card-header">
-                <div class="brand-logo-container">
-                    <div class="brand-halo-ring"></div>
-                    <div class="brand-logo-box">
-                        <i class="fa-solid fa-flask-vial"></i>
-                        <div class="brand-flask-bubble" title="Industrial System Active">
+            <!-- Top Brand Emblem -->
+            <div class="showcase-content showcase-brand">
+                <div class="brand-emblem-box">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <div class="brand-emblem-sparkle">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="brand-text-block">
+                    <h5>GUDI CHEMICALS</h5>
+                    <small>MANUFACTURING, POS &amp; GST ERP</small>
+                </div>
+            </div>
+
+            <!-- Center Headline & Feature Cards -->
+            <div class="showcase-content my-auto py-4">
+                <h1 class="showcase-headline">
+                    Intelligent Chemical <span class="gradient-text">Manufacturing &amp; POS</span> Workstation.
+                </h1>
+                <p class="showcase-subtitle">
+                    Automated recipe compounding, barcode billing, multi-tier FIFO inventory, and automated GST compliance in real-time.
+                </p>
+
+                <div class="showcase-features-stack">
+                    <div class="feature-card">
+                        <div class="feature-icon-pill" style="background: rgba(13, 148, 136, 0.18); color: #2dd4bf;">
+                            <i class="fa-solid fa-flask"></i>
+                        </div>
+                        <div>
+                            <div class="feature-title">Batch Compounding &amp; Lab QC</div>
+                            <p class="feature-desc">Automated BOM formulation scaling, loss tracking, and test pass/fail recording.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon-pill" style="background: rgba(2, 132, 199, 0.18); color: #38bdf8;">
                             <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div>
+                            <div class="feature-title">High-Speed POS &amp; Billing Desk</div>
+                            <p class="feature-desc">Sub-second barcode scans, multi-payment tenders, and thermal 80mm invoice receipts.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon-pill" style="background: rgba(245, 158, 11, 0.18); color: #fbbf24;">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <div>
+                            <div class="feature-title">Multi-Tier Inventory &amp; GSTR-1</div>
+                            <p class="feature-desc">Batch/Lot FIFO tracking, real-time low stock alerts, and one-click PDF tax reports.</p>
                         </div>
                     </div>
                 </div>
-                <h3 class="brand-title">GUDI CHEMICALS</h3>
-                <p class="brand-subtitle">
-                    <i class="fa-solid fa-industry me-1"></i> Chemical Manufacturing &bull; POS &bull; GST ERP
-                </p>
             </div>
 
-            <!-- Card Body / Sign In Form -->
-            <div class="login-card-body">
+            <!-- Bottom Compliance Badges -->
+            <div class="showcase-content showcase-footer">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="compliance-pill">
+                        <i class="fa-solid fa-shield-halved text-success"></i> 256-Bit SSL
+                    </span>
+                    <span class="compliance-pill">
+                        <i class="fa-solid fa-check-double text-info"></i> GST Ready
+                    </span>
+                    <span class="compliance-pill">
+                        <i class="fa-solid fa-circle-check text-warning"></i> Audit Logged
+                    </span>
+                </div>
+                <span>&copy; {{ date('Y') }} Gudi Chemicals</span>
+            </div>
+        </aside>
+
+        <!-- -----------------------------------------------------------
+             RIGHT PANEL: Sign In Form & Workstation Authentication
+             ----------------------------------------------------------- -->
+        <main class="auth-form-panel">
+            <div class="auth-form-container">
+                <!-- Mobile Brand Header (Visible only on small screens) -->
+                <div class="mobile-brand-header">
+                    <div class="brand-emblem-box" style="width: 42px; height: 42px; font-size: 1.25rem;">
+                        <i class="fa-solid fa-flask-vial"></i>
+                    </div>
+                    <div class="brand-text-block">
+                        <h6 class="fw-bold mb-0 text-dark">GUDI CHEMICALS</h6>
+                        <small class="text-primary fw-semibold" style="font-size: 0.65rem;">CHEMICAL ERP WORKSTATION</small>
+                    </div>
+                </div>
+
+                <!-- Form Title Block -->
+                <div class="form-header-badge">
+                    <span class="live-dot"></span>
+                    <span>ERP Workstation Portal</span>
+                </div>
+
+                <h2 class="form-title">Workstation Sign In</h2>
+                <p class="form-subtitle">Enter your designated staff email and security password to access your terminal.</p>
+
+                <!-- Feedback Alerts -->
                 @if(session('error'))
-                    <div class="alert alert-danger py-2 px-3 small mb-3 d-flex align-items-center gap-2 border-0 shadow-sm" style="background-color: #fef2f2; color: #991b1b; border-radius: 10px;">
-                        <i class="fa-solid fa-triangle-exclamation text-danger fs-5"></i>
+                    <div class="alert alert-danger py-2 px-3 small mb-3 d-flex align-items-center gap-2 border-0 shadow-sm" style="background-color: #fef2f2; color: #991b1b; border-radius: 9px;">
+                        <i class="fa-solid fa-circle-exclamation text-danger fs-6"></i>
                         <div>{{ session('error') }}</div>
                     </div>
                 @endif
 
                 @if(session('success'))
-                    <div class="alert alert-success py-2 px-3 small mb-3 d-flex align-items-center gap-2 border-0 shadow-sm" style="background-color: #f0fdf4; color: #166534; border-radius: 10px;">
-                        <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                    <div class="alert alert-success py-2 px-3 small mb-3 d-flex align-items-center gap-2 border-0 shadow-sm" style="background-color: #f0fdf4; color: #166534; border-radius: 9px;">
+                        <i class="fa-solid fa-circle-check text-success fs-6"></i>
                         <div>{{ session('success') }}</div>
                     </div>
                 @endif
 
+                <!-- Authentication Form -->
                 <form method="POST" action="{{ route('login') }}" autocomplete="on">
                     @csrf
 
-                    <!-- Workstation Email Input -->
-                    <div class="mb-3">
-                        <label for="email" class="form-label">
-                            <span><i class="fa-solid fa-user-shield text-primary me-1"></i> Workstation Email</span>
+                    <!-- Workstation Email -->
+                    <div>
+                        <label for="email" class="form-label-custom">
+                            <i class="fa-regular fa-envelope text-primary"></i>
+                            <span>Staff Email Address</span>
                         </label>
-                        <div class="input-group-custom @error('email') is-invalid @enderror">
-                            <span class="input-group-icon">
-                                <i class="fa-solid fa-envelope"></i>
-                            </span>
+                        <div class="input-wrapper @error('email') is-invalid @enderror">
+                            <div class="input-prefix-icon">
+                                <i class="fa-solid fa-at"></i>
+                            </div>
                             <input type="email" 
-                                   class="form-control-custom" 
                                    id="email" 
                                    name="email" 
+                                   class="input-field" 
                                    value="{{ old('email') }}" 
                                    required 
                                    autofocus 
-                                   placeholder="staff@gudichemicals.com">
+                                   placeholder="e.g. staff@gudichemicals.com">
                         </div>
                         @error('email')
-                            <div class="text-danger small mt-1 fw-semibold">
+                            <div class="text-danger small mt-n2 mb-2 fw-semibold">
                                 <i class="fa-solid fa-circle-exclamation me-1"></i>{{ $message }}
                             </div>
                         @enderror
                     </div>
 
-                    <!-- Password Input with Show/Hide Eye Toggle -->
-                    <div class="mb-3">
-                        <label for="password" class="form-label">
-                            <span><i class="fa-solid fa-lock text-primary me-1"></i> Security Password</span>
+                    <!-- Security Password with Show/Hide Eye Toggle -->
+                    <div>
+                        <label for="password" class="form-label-custom">
+                            <i class="fa-solid fa-lock text-primary"></i>
+                            <span>Security Password</span>
                         </label>
-                        <div class="input-group-custom @error('password') is-invalid @enderror">
-                            <span class="input-group-icon">
+                        <div class="input-wrapper @error('password') is-invalid @enderror">
+                            <div class="input-prefix-icon">
                                 <i class="fa-solid fa-key"></i>
-                            </span>
+                            </div>
                             <input type="password" 
-                                   class="form-control-custom" 
                                    id="password" 
                                    name="password" 
+                                   class="input-field" 
                                    required 
-                                   placeholder="Enter workstation password">
+                                   placeholder="Enter your security password">
                             <button type="button" 
-                                    class="btn-toggle-password" 
+                                    class="btn-toggle-eye" 
                                     id="togglePasswordBtn" 
                                     onclick="togglePasswordVisibility()" 
-                                    title="Show/Hide Password" 
-                                    aria-label="Toggle password visibility">
+                                    title="Show/Hide Password"
+                                    aria-label="Toggle password view">
                                 <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
                             </button>
                         </div>
                         @error('password')
-                            <div class="text-danger small mt-1 fw-semibold">
+                            <div class="text-danger small mt-n2 mb-2 fw-semibold">
                                 <i class="fa-solid fa-circle-exclamation me-1"></i>{{ $message }}
                             </div>
                         @enderror
                     </div>
 
-                    <!-- Remember Workstation Session -->
-                    <div class="d-flex align-items-center justify-content-between mb-4">
+                    <!-- Remember Workstation & Help Link -->
+                    <div class="remember-row">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="remember" name="remember" checked>
                             <label class="form-check-label" for="remember">
-                                Keep workstation session active
+                                Keep session active
                             </label>
                         </div>
+                        <a href="mailto:admin@gudichemicals.com?subject=ERP%20Password%20Assistance" class="support-link">
+                            Need help?
+                        </a>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn-signin-primary">
+                    <button type="submit" class="btn-auth-submit">
                         <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                        <span>Authenticate &amp; Launch ERP</span>
+                        <span>Sign In to Workstation</span>
                     </button>
                 </form>
 
-                <!-- Security Assurance Footer (Authorized Only) -->
-                <div class="login-trust-footer">
-                    <i class="fa-solid fa-shield-halved text-success fs-6"></i>
-                    <span>256-Bit SSL Encrypted &bull; Audit Trail Logged &bull; GST Ready</span>
+                <!-- Footer Support Note -->
+                <div class="auth-panel-footer">
+                    <div><strong>Gudi Chemicals Industrial ERP</strong> &bull; Version 1.2</div>
+                    <div class="mt-1">
+                        For role permission changes or account reset, contact 
+                        <a href="mailto:admin@gudichemicals.com" class="text-decoration-none text-primary fw-semibold">
+                            admin@gudichemicals.com
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Outer Footer -->
-        <div class="login-outer-footer">
-            <div>&copy; {{ date('Y') }} <strong>Gudi Chemicals</strong>. All rights reserved.</div>
-            <div class="mt-1">
-                Authorized Personnel Only &bull; Need help? Contact <a href="mailto:admin@gudichemicals.com">admin@gudichemicals.com</a>
-            </div>
-        </div>
+        </main>
     </div>
 
     <!-- Interactive Show/Hide Password Script -->
