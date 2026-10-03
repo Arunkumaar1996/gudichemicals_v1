@@ -387,12 +387,77 @@
             color: #fef08a !important;
         }
 
+        /* Mobile Segmented Switcher & Floating Bottom Cart */
+        .pos-mobile-nav-tabs {
+            display: none;
+            background: #091326;
+            padding: 0.35rem 0.5rem;
+            gap: 0.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            position: sticky;
+            top: 46px;
+            z-index: 99;
+        }
+        .pos-mobile-tab-btn {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.45rem 0.6rem;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease-in-out;
+        }
+        .pos-mobile-tab-btn.active {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #005a9c 0%, #0070c0 100%) !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 2px 8px rgba(0, 90, 156, 0.5);
+        }
+        .pos-mobile-floating-cart {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #062b4d 0%, #004b87 100%);
+            color: #ffffff;
+            padding: 0.6rem 1rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1040;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+        .cart-floating-icon {
+            position: relative;
+            font-size: 1.35rem;
+            color: #38bdf8;
+        }
+        .cart-floating-icon .badge {
+            position: absolute;
+            top: -7px;
+            right: -9px;
+            font-size: 0.65rem;
+            padding: 0.22em 0.45em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
         /* Responsive Media Queries for Tablets and Mobile Devices */
         @media (max-width: 991.98px) {
             body, #pos-app {
                 height: auto !important;
                 min-height: 100vh;
                 overflow-y: auto !important;
+            }
+            .pos-mobile-nav-tabs {
+                display: flex !important;
             }
             .pos-workspace-grid {
                 flex-direction: column;
@@ -401,20 +466,29 @@
                 padding: 0.5rem;
                 gap: 0.75rem;
             }
+            .catalog-container.mobile-hidden,
+            .cart-container.mobile-hidden {
+                display: none !important;
+            }
             .catalog-container {
                 flex: none;
                 width: 100%;
-                height: 480px;
-                min-height: 380px;
+                height: auto !important;
+                min-height: calc(100vh - 120px);
+                margin-bottom: 70px;
+            }
+            .catalog-scroll-body {
+                overflow: visible !important;
+                max-height: none !important;
             }
             .cart-container {
                 flex: none;
                 width: 100%;
-                height: auto;
-                min-height: 480px;
+                height: auto !important;
+                min-height: calc(100vh - 120px);
             }
             .cart-table-body {
-                max-height: 280px;
+                max-height: 52vh !important;
             }
         }
 
@@ -426,9 +500,6 @@
             .pos-workspace-grid {
                 padding: 0.25rem;
                 gap: 0.5rem;
-            }
-            .catalog-container {
-                height: 420px;
             }
             .compact-product-card {
                 padding: 0.45rem;
@@ -442,6 +513,9 @@
             #posWarehouse {
                 min-width: 110px !important;
                 max-width: 135px;
+            }
+            .modal-dialog {
+                margin: 0.5rem;
             }
         }
     </style>
@@ -514,10 +588,20 @@
         </div>
     </header>
 
+    <!-- Mobile Segmented Navigation Switcher (Shown only on Mobile/Tablet < 992px) -->
+    <div class="pos-mobile-nav-tabs d-lg-none">
+        <button type="button" class="pos-mobile-tab-btn active" id="tabBtnCatalog" onclick="switchMobilePosTab('catalog')">
+            <i class="fa-solid fa-boxes-stacked me-1.5 text-warning"></i> Products Catalog
+        </button>
+        <button type="button" class="pos-mobile-tab-btn" id="tabBtnCart" onclick="switchMobilePosTab('cart')">
+            <i class="fa-solid fa-cart-shopping me-1.5 text-info"></i> Cart (<span id="mobileCartBadge">0</span>) • <span id="mobileCartTotal" class="text-warning">₹0.00</span>
+        </button>
+    </div>
+
     <!-- Main POS Grid Workspace -->
     <div class="pos-workspace-grid">
         <!-- LEFT PANEL: High Speed Product Finding Engine -->
-        <div class="catalog-container">
+        <div class="catalog-container" id="catalogContainer">
             <!-- Search & Barcode Scan Strip -->
             <div class="catalog-search-strip">
                 <div class="input-group input-group-sm">
@@ -606,7 +690,15 @@
         </div>
 
         <!-- RIGHT PANEL: Billing Cart Console -->
-        <div class="cart-container">
+        <div class="cart-container mobile-hidden" id="cartContainer">
+            <!-- Mobile Return to Catalog Button -->
+            <div class="d-flex align-items-center justify-content-between p-2 bg-light border-bottom d-lg-none">
+                <button type="button" class="btn btn-sm btn-outline-primary fw-bold py-1 px-2.5" onclick="switchMobilePosTab('catalog')">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Add More Products
+                </button>
+                <span class="badge bg-primary px-2.5 py-1.5"><i class="fa-solid fa-cart-shopping me-1"></i> Billing Cart</span>
+            </div>
+
             <!-- Customer Bar -->
             <div class="cart-top-bar">
                 <div class="row g-1.5 align-items-center">
@@ -712,6 +804,24 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Floating Bottom Checkout Bar for Mobile Catalog View -->
+    <div class="pos-mobile-floating-cart d-lg-none" id="mobileFloatingCartBar" onclick="switchMobilePosTab('cart')">
+        <div class="d-flex align-items-center">
+            <div class="cart-floating-icon me-2.5">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="badge rounded-pill bg-danger" id="floatingCartCount">0</span>
+            </div>
+            <div>
+                <div class="text-white-50 text-uppercase fw-semibold" style="font-size: 0.65rem; line-height: 1;">Total Payable</div>
+                <div class="fw-bold text-white fs-6" id="floatingCartTotal">₹0.00</div>
+            </div>
+        </div>
+        <div class="btn btn-sm btn-success fw-bold px-3 py-1.5 shadow d-flex align-items-center">
+            <span>View Cart & Pay</span>
+            <i class="fa-solid fa-arrow-right ms-1.5"></i>
         </div>
     </div>
 </div>
@@ -1003,6 +1113,46 @@
     let searchDebounceTimer = null;
     let selectedCategory = '';
     let pendingModalProduct = null;
+    let currentMobileTab = 'catalog';
+
+    // Switch between Catalog and Cart on mobile/tablet viewports (< 992px)
+    function switchMobilePosTab(tab) {
+        currentMobileTab = tab;
+        if (window.innerWidth >= 992) {
+            $('#catalogContainer').removeClass('mobile-hidden');
+            $('#cartContainer').removeClass('mobile-hidden');
+            return;
+        }
+
+        if (tab === 'cart') {
+            $('#catalogContainer').addClass('mobile-hidden');
+            $('#cartContainer').removeClass('mobile-hidden');
+            $('#tabBtnCatalog').removeClass('active');
+            $('#tabBtnCart').addClass('active');
+            $('#mobileFloatingCartBar').hide();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            $('#catalogContainer').removeClass('mobile-hidden');
+            $('#cartContainer').addClass('mobile-hidden');
+            $('#tabBtnCatalog').addClass('active');
+            $('#tabBtnCart').removeClass('active');
+            if (Object.keys(cart).length > 0) {
+                $('#mobileFloatingCartBar').css('display', 'flex');
+            } else {
+                $('#mobileFloatingCartBar').hide();
+            }
+        }
+    }
+
+    $(window).on('resize', function() {
+        if (window.innerWidth >= 992) {
+            $('#catalogContainer').removeClass('mobile-hidden');
+            $('#cartContainer').removeClass('mobile-hidden');
+            $('#mobileFloatingCartBar').hide();
+        } else {
+            switchMobilePosTab(currentMobileTab);
+        }
+    });
 
     // Web Audio Synthesizer Beep for scanner feedback
     function playScanBeep(success = true) {
@@ -1422,7 +1572,21 @@
             container.append(html);
         });
 
-        $('#lblCartCount').text(keys.length + ' items (' + totalQty.toFixed(1) + ' ' + (keys.length === 1 ? 'qty' : 'total') + ')');
+        const count = keys.length;
+        const totalFormatted = (lastCalculation && lastCalculation.grand_total) ? '₹' + parseFloat(lastCalculation.grand_total).toFixed(2) : '₹0.00';
+        $('#lblCartCount').text(count + ' items (' + totalQty.toFixed(1) + ' ' + (count === 1 ? 'qty' : 'total') + ')');
+        $('#mobileCartBadge').text(count);
+        $('#mobileCartTotal').text(totalFormatted);
+        $('#floatingCartCount').text(count);
+        $('#floatingCartTotal').text(totalFormatted);
+
+        if (window.innerWidth < 992) {
+            if (count > 0 && currentMobileTab === 'catalog') {
+                $('#mobileFloatingCartBar').css('display', 'flex');
+            } else {
+                $('#mobileFloatingCartBar').hide();
+            }
+        }
     }
 
     // Server-Side Reactive Cart Calculation
@@ -1433,6 +1597,9 @@
             $('#lblGstTotal').text('₹0.00');
             $('#lblGrandTotal').text('₹0.00');
             $('#lblRounding').text('₹0.00');
+            $('#mobileCartTotal').text('₹0.00');
+            $('#floatingCartTotal').text('₹0.00');
+            $('#mobileFloatingCartBar').hide();
             $('#rowDiscount').addClass('d-none');
             $('#promoAlertBanner').addClass('d-none');
             return;
@@ -1472,7 +1639,14 @@
                 }
 
                 $('#lblRounding').text((res.rounding_adjustment >= 0 ? '+' : '') + '₹' + parseFloat(res.rounding_adjustment).toFixed(2));
-                $('#lblGrandTotal').text('₹' + parseFloat(res.grand_total).toFixed(2));
+                const grandStr = '₹' + parseFloat(res.grand_total).toFixed(2);
+                $('#lblGrandTotal').text(grandStr);
+                $('#mobileCartTotal').text(grandStr);
+                $('#floatingCartTotal').text(grandStr);
+
+                if (window.innerWidth < 992 && keys.length > 0 && currentMobileTab === 'catalog') {
+                    $('#mobileFloatingCartBar').css('display', 'flex');
+                }
 
                 if (res.applied_promotions && res.applied_promotions.length > 0) {
                     const promoNames = res.applied_promotions.map(p => p.name).join(', ');
