@@ -3,14 +3,35 @@
 @section('title', 'Staff Users & Role Permissions')
 
 @section('content')
-<div class="d-flex align-items-center justify-content-between mb-4">
+<div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
     <div>
         <h4 class="fw-bold mb-1 text-dark">Staff Users & System Roles</h4>
         <p class="text-muted small mb-0">Manage ERP access credentials, assign departmental roles, and configure staff login security.</p>
     </div>
-    <button class="btn btn-gudi-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
-        <i class="fa-solid fa-user-plus me-1"></i> Add New Staff User
-    </button>
+    <div class="d-flex gap-2">
+        <a href="{{ route('roles.index') }}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-user-shield me-1"></i> Roles & Permissions Matrix
+        </a>
+        <button class="btn btn-gudi-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+            <i class="fa-solid fa-user-plus me-1"></i> Add New Staff User
+        </button>
+    </div>
+</div>
+
+<!-- Navigation Pills for Fast Switching -->
+<div class="mb-4">
+    <ul class="nav nav-pills border-bottom pb-2">
+        <li class="nav-item">
+            <a class="nav-link active fw-bold py-1.5 px-3" href="{{ route('users.index') }}" style="background-color: #005a9c;">
+                <i class="fa-solid fa-user-group me-1.5"></i> Staff Users
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-muted fw-semibold py-1.5 px-3" href="{{ route('roles.index') }}">
+                <i class="fa-solid fa-user-shield me-1.5 text-primary"></i> Roles & Permissions Matrix
+            </a>
+        </li>
+    </ul>
 </div>
 
 <div class="row g-4">
@@ -42,6 +63,9 @@
                         </thead>
                         <tbody>
                             @forelse($users as $u)
+                                @php
+                                    $isThisSuperAdmin = $u->role === 'Super Admin' || $u->hasRole('Super Admin') || $u->email === 'admin@gudichemicals.com';
+                                @endphp
                                 <tr>
                                     <td class="ps-3">
                                         <div class="d-flex align-items-center">
@@ -49,7 +73,14 @@
                                                 {{ strtoupper(substr($u->name, 0, 1)) }}
                                             </div>
                                             <div>
-                                                <div class="fw-bold text-dark">{{ $u->name }}</div>
+                                                <div class="fw-bold text-dark d-flex align-items-center gap-1.5">
+                                                    {{ $u->name }}
+                                                    @if($isThisSuperAdmin)
+                                                        <span class="badge bg-dark text-warning border border-warning-subtle" style="font-size: 0.65rem;">
+                                                            <i class="fa-solid fa-code me-1"></i> Developer Account
+                                                        </span>
+                                                    @endif
+                                                </div>
                                                 <small class="text-muted"><i class="fa-regular fa-envelope me-1"></i>{{ $u->email }}</small>
                                             </div>
                                         </div>
@@ -94,33 +125,39 @@
                                     </td>
                                     <td class="text-end pe-3">
                                         <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-outline-secondary" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#editUserModal{{ $u->id }}" 
-                                                    title="Edit User">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-
-                                            @if($u->id !== auth()->id())
-                                                <form method="POST" action="{{ route('users.toggle', $u->id) }}" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn {{ $u->is_active ? 'btn-outline-warning' : 'btn-outline-success' }}" 
-                                                            title="{{ $u->is_active ? 'Deactivate User' : 'Activate User' }}">
-                                                        <i class="fa-solid {{ $u->is_active ? 'fa-user-slash' : 'fa-user-check' }}"></i>
-                                                    </button>
-                                                </form>
-
-                                                <form method="POST" action="{{ route('users.destroy', $u->id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete staff user {{ $u->name }}? This action cannot be undone.');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-outline-danger" title="Delete User">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <span class="btn btn-outline-light text-muted disabled border" title="Current Active Session">
-                                                    <i class="fa-solid fa-lock"></i>
+                                            @if($isThisSuperAdmin && !($isSuperAdmin ?? false))
+                                                <span class="btn btn-outline-light text-muted disabled border" title="Protected Developer Account">
+                                                    <i class="fa-solid fa-lock text-warning"></i>
                                                 </span>
+                                            @else
+                                                <button type="button" class="btn btn-outline-secondary" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editUserModal{{ $u->id }}" 
+                                                        title="Edit User">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+
+                                                @if($u->id !== auth()->id() && !$isThisSuperAdmin)
+                                                    <form method="POST" action="{{ route('users.toggle', $u->id) }}" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn {{ $u->is_active ? 'btn-outline-warning' : 'btn-outline-success' }}" 
+                                                                title="{{ $u->is_active ? 'Deactivate User' : 'Activate User' }}">
+                                                            <i class="fa-solid {{ $u->is_active ? 'fa-user-slash' : 'fa-user-check' }}"></i>
+                                                        </button>
+                                                    </form>
+
+                                                    <form method="POST" action="{{ route('users.destroy', $u->id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete staff user {{ $u->name }}? This action cannot be undone.');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-outline-danger" title="Delete User">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="btn btn-outline-light text-muted disabled border" title="{{ $isThisSuperAdmin ? 'Protected Developer Account' : 'Current Active Session' }}">
+                                                        <i class="fa-solid fa-lock {{ $isThisSuperAdmin ? 'text-warning' : '' }}"></i>
+                                                    </span>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>
@@ -155,11 +192,13 @@
 
                                                     <div class="mb-3">
                                                         <label class="form-label small fw-semibold">Role Designation <span class="text-danger">*</span></label>
-                                                        <select name="role" class="form-select" required>
+                                                        <select name="role" class="form-select" required {{ $isThisSuperAdmin && !($isSuperAdmin ?? false) ? 'disabled' : '' }}>
                                                             @foreach($roles as $role)
-                                                                <option value="{{ $role->name }}" {{ ($u->roles->first()?->name ?: $u->role) === $role->name ? 'selected' : '' }}>
-                                                                    {{ $role->name }}
-                                                                </option>
+                                                                @if($role->name !== 'Super Admin' || ($isSuperAdmin ?? false))
+                                                                    <option value="{{ $role->name }}" {{ ($u->roles->first()?->name ?: $u->role) === $role->name ? 'selected' : '' }}>
+                                                                        {{ $role->name }}
+                                                                    </option>
+                                                                @endif
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -223,7 +262,9 @@
                         <label class="form-label small fw-semibold">Assigned System Role <span class="text-danger">*</span></label>
                         <select name="role" class="form-select" required>
                             @foreach($roles as $role)
-                                <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                @if($role->name !== 'Super Admin' || ($isSuperAdmin ?? false))
+                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                @endif
                             @endforeach
                         </select>
                         <small class="text-muted">Determines access permissions across Billing, Production, Purchasing, and Reports.</small>

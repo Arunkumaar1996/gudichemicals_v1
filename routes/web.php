@@ -20,6 +20,7 @@ use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Sales\PosController;
 use App\Http\Controllers\Sales\SalesInvoiceController;
 use App\Http\Controllers\Sales\SalesReturnController;
+use App\Http\Controllers\Settings\RoleController;
 use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\Settings\UserController;
 use Illuminate\Support\Facades\Route;
@@ -178,6 +179,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/{user}', [UserController::class, 'update'])->name('update');
         Route::post('/{user}/toggle', [UserController::class, 'toggle'])->name('toggle');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');
+        Route::post('/', [RoleController::class, 'store'])->name('store');
+        Route::put('/{role}', [RoleController::class, 'update'])->name('update');
+        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
     });
 
     // App User Guide & Training Center

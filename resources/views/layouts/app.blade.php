@@ -789,6 +789,7 @@
                 </a>
 
                 <!-- POS & Sales Billing (Collapsible Submenu) -->
+                @if(auth()->user() && (auth()->user()->can('sales.view') || auth()->user()->can('sales.create')))
                 @php
                     $isSalesActive = request()->routeIs('pos.*') || request()->routeIs('invoices.*') || request()->routeIs('returns.*') || request()->routeIs('promotions.*');
                 @endphp
@@ -801,31 +802,43 @@
                     </button>
                     <div class="menu-sub collapse {{ $isSalesActive ? 'show' : '' }}" id="menuSales">
                         <div class="flyout-header d-none">POS & Sales Billing</div>
+                        @can('sales.create')
                         <a href="{{ route('pos.index') }}" target="_blank" class="menu-sub-link {{ request()->routeIs('pos.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">POS Fast Billing Desk</span>
                             <span class="badge bg-danger ms-auto fs-xs" style="font-size: 0.65rem;">FAST</span>
                         </a>
+                        @endcan
+                        @can('sales.view')
                         <a href="{{ route('invoices.index') }}" class="menu-sub-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Sales Invoices</span>
                         </a>
+                        @endcan
+                        @can('sales.returns.create')
                         <a href="{{ route('returns.index') }}" class="menu-sub-link {{ request()->routeIs('returns.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Sales Returns / Credit</span>
                         </a>
+                        @endcan
+                        @if(auth()->user()->can('payments.collect') || auth()->user()->can('reports.sales'))
                         <a href="{{ route('reports.collections') }}" class="menu-sub-link {{ request()->routeIs('reports.collections') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Payment Collections</span>
                         </a>
+                        @endif
+                        @can('sales.view')
                         <a href="{{ route('promotions.index') }}" class="menu-sub-link {{ request()->routeIs('promotions.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Promotions & Offers</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- Chemical Manufacturing (Collapsible Submenu) -->
+                @if(auth()->user() && (auth()->user()->can('production.view') || auth()->user()->can('production.create')))
                 @php
                     $isMfgActive = request()->routeIs('production.*');
                 @endphp
@@ -837,6 +850,7 @@
                     </button>
                     <div class="menu-sub collapse {{ $isMfgActive ? 'show' : '' }}" id="menuMfg">
                         <div class="flyout-header d-none">Chemical Production</div>
+                        @can('production.view')
                         <a href="{{ route('production.formulas.index') }}" class="menu-sub-link {{ request()->routeIs('production.formulas.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Formulas (BOM)</span>
@@ -845,14 +859,19 @@
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Production Batches</span>
                         </a>
+                        @endcan
+                        @can('reports.production')
                         <a href="{{ route('reports.production') }}" class="menu-sub-link {{ request()->routeIs('reports.production') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Yield & Costing</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- Multi-Tier Inventory (Collapsible Submenu) -->
+                @if(auth()->user() && (auth()->user()->can('inventory.view') || auth()->user()->can('inventory.adjust')))
                 @php
                     $isInvActive = request()->routeIs('inventory.*');
                 @endphp
@@ -864,6 +883,7 @@
                     </button>
                     <div class="menu-sub collapse {{ $isInvActive ? 'show' : '' }}" id="menuInv">
                         <div class="flyout-header d-none">Multi-Tier Inventory</div>
+                        @can('inventory.view')
                         <a href="{{ route('inventory.index') }}" class="menu-sub-link {{ request()->routeIs('inventory.index') && !request()->has('filter') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Stock on Hand</span>
@@ -876,6 +896,8 @@
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Stock Movement Ledger</span>
                         </a>
+                        @endcan
+                        @can('inventory.adjust')
                         <a href="{{ route('inventory.adjustments.index') }}" class="menu-sub-link {{ request()->routeIs('inventory.adjustments.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Stock Adjustments</span>
@@ -884,10 +906,13 @@
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Opening Stock</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- Purchases & Suppliers (Collapsible Submenu) -->
+                @if(auth()->user() && (auth()->user()->can('purchases.view') || auth()->user()->can('goods_receipts.post')))
                 @php
                     $isPurActive = request()->routeIs('purchases.*');
                 @endphp
@@ -899,22 +924,30 @@
                     </button>
                     <div class="menu-sub collapse {{ $isPurActive ? 'show' : '' }}" id="menuPurchases">
                         <div class="flyout-header d-none">Purchasing & Vendor</div>
+                        @can('purchases.view')
                         <a href="{{ route('purchases.orders.index') }}" class="menu-sub-link {{ request()->routeIs('purchases.orders.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Purchase Orders</span>
                         </a>
+                        @endcan
+                        @can('goods_receipts.post')
                         <a href="{{ route('purchases.grn.index') }}" class="menu-sub-link {{ request()->routeIs('purchases.grn.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Goods Receipts (GRN)</span>
                         </a>
+                        @endcan
+                        @can('purchases.view')
                         <a href="{{ route('purchases.payments.index') }}" class="menu-sub-link {{ request()->routeIs('purchases.payments.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Vendor Payments</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- Master Data (Collapsible Submenu) -->
+                @if(auth()->user() && auth()->user()->can('products.view'))
                 @php
                     $isMastersActive = request()->routeIs('masters.*');
                 @endphp
@@ -948,8 +981,10 @@
                         </a>
                     </div>
                 </div>
+                @endif
 
                 <!-- Finance & GST Reports (Collapsible Submenu) -->
+                @if(auth()->user() && (auth()->user()->can('reports.sales') || auth()->user()->can('reports.financial') || auth()->user()->can('reports.inventory') || auth()->user()->can('expenses.manage')))
                 @php
                     $isReportsActive = request()->routeIs('reports.*') || request()->routeIs('expenses.*');
                 @endphp
@@ -961,10 +996,13 @@
                     </button>
                     <div class="menu-sub collapse {{ $isReportsActive ? 'show' : '' }}" id="menuReports">
                         <div class="flyout-header d-none">Finance & Reports</div>
+                        @can('reports.sales')
                         <a href="{{ route('reports.sales') }}" class="menu-sub-link {{ request()->routeIs('reports.sales') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Sales Register</span>
                         </a>
+                        @endcan
+                        @can('reports.financial')
                         <a href="{{ route('reports.gst') }}" class="menu-sub-link {{ request()->routeIs('reports.gst') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">GSTR-1 Tax Summary</span>
@@ -977,24 +1015,33 @@
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Vendor Payables</span>
                         </a>
+                        @endcan
+                        @can('reports.sales')
                         <a href="{{ route('reports.collections') }}" class="menu-sub-link {{ request()->routeIs('reports.collections') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Daily Collections</span>
                         </a>
+                        @endcan
+                        @can('reports.inventory')
                         <a href="{{ route('reports.inventory') }}" class="menu-sub-link {{ request()->routeIs('reports.inventory') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Inventory Valuation</span>
                         </a>
+                        @endcan
+                        @can('expenses.manage')
                         <a href="{{ route('expenses.index') }}" class="menu-sub-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Operating Expenses</span>
                         </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- System Administration (Collapsible Submenu) -->
+                @if(auth()->user() && (auth()->user()->can('settings.update') || auth()->user()->can('users.manage')))
                 @php
-                    $isSettingsActive = request()->routeIs('settings.*') || request()->routeIs('users.*');
+                    $isSettingsActive = request()->routeIs('settings.*') || request()->routeIs('users.*') || request()->routeIs('roles.*');
                 @endphp
                 <div class="menu-item {{ $isSettingsActive ? 'active-parent' : '' }}">
                     <button class="menu-toggle {{ $isSettingsActive ? 'active' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#menuSettings" aria-expanded="{{ $isSettingsActive ? 'true' : 'false' }}">
@@ -1004,16 +1051,25 @@
                     </button>
                     <div class="menu-sub collapse {{ $isSettingsActive ? 'show' : '' }}" id="menuSettings">
                         <div class="flyout-header d-none">Settings & Users</div>
+                        @can('settings.update')
                         <a href="{{ route('settings.index') }}" class="menu-sub-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
                             <span class="sub-text">Company Settings</span>
                         </a>
+                        @endcan
+                        @can('users.manage')
                         <a href="{{ route('users.index') }}" class="menu-sub-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                             <span class="bullet-dot"></span>
-                            <span class="sub-text">Users & Permissions</span>
+                            <span class="sub-text">Staff Users</span>
                         </a>
+                        <a href="{{ route('roles.index') }}" class="menu-sub-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                            <span class="bullet-dot"></span>
+                            <span class="sub-text">Roles & Permissions</span>
+                        </a>
+                        @endcan
                     </div>
                 </div>
+                @endif
 
                 <!-- Help & Training Center -->
                 <div class="menu-category">Help & Training</div>

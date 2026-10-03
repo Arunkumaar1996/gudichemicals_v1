@@ -145,9 +145,11 @@
             <a href="{{ route('pos.index') }}" target="_blank" class="btn btn-success fw-bold shadow-sm d-flex align-items-center py-2 px-3" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); border: none;">
                 <i class="fa-solid fa-bolt me-1.5 text-warning"></i> Open POS Billing Desk
             </a>
+            @can('production.create')
             <a href="{{ route('production.orders.create') }}" class="btn btn-light fw-bold shadow-sm d-flex align-items-center py-2 px-3 text-primary border-0" style="background: #ffffff;">
                 <i class="fa-solid fa-plus me-1.5 text-primary"></i> New Production Batch
             </a>
+            @endcan
         </div>
     </div>
 </div>
@@ -248,8 +250,10 @@
                 </div>
             </div>
             <div class="mt-2 pt-2 border-top border-light d-flex justify-content-between align-items-center small text-muted" style="font-size: 0.7rem;">
-                <span>Chemical Production</span>
+                <span>Batch Processing</span>
+                @can('production.view')
                 <a href="{{ route('production.orders.index') }}" class="text-decoration-none fw-semibold" style="color: #7c3aed;">Batch Orders &rarr;</a>
+                @endcan
             </div>
         </div>
     </div>
@@ -269,6 +273,7 @@
         </a>
     </div>
 
+    @can('production.view')
     <div class="col-6 col-md-4 col-xl-2">
         <a href="{{ route('production.formulas.index') }}" class="quick-launch-tile">
             <div class="quick-tile-icon shadow-sm" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);">
@@ -280,6 +285,7 @@
             </div>
         </a>
     </div>
+    @endcan
 
     <div class="col-6 col-md-4 col-xl-2">
         <a href="{{ route('inventory.index') }}" class="quick-launch-tile">
@@ -574,6 +580,7 @@
     </div>
 
     <!-- Recent Production Batches -->
+    @can('production.view')
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm" style="border-radius: 10px;">
             <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
@@ -605,7 +612,7 @@
                                     <td class="fw-semibold">{{ number_format($batch->planned_qty, 2) }}</td>
                                     <td>
                                         <span class="badge {{ $batch->status === 'completed' ? 'bg-success-subtle text-success border border-success-subtle' : ($batch->status === 'in_progress' ? 'bg-info-subtle text-info border border-info-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle') }}">
-                                            {{ ucfirst(str_replace('_', ' ', $batch->status)) }}
+                                             {{ ucfirst(str_replace('_', ' ', $batch->status)) }}
                                         </span>
                                     </td>
                                     <td class="text-end">
@@ -623,6 +630,7 @@
             </div>
         </div>
     </div>
+    @endcan
 </div>
 @endsection
 

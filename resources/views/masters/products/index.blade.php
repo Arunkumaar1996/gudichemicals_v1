@@ -9,9 +9,11 @@
         <p class="text-muted small mb-0">Raw chemicals, packaging, bulk liquid and finished chemical products</p>
     </div>
     <div class="mt-2 mt-md-0">
+        @can('products.create')
         <a href="{{ route('masters.products.create') }}" class="btn btn-primary fw-semibold">
             <i class="fa-solid fa-plus me-1"></i> Add New Product / SKU
         </a>
+        @endcan
     </div>
 </div>
 
@@ -103,9 +105,22 @@
                                 </span>
                             </td>
                             <td class="text-end">
-                                <a href="{{ route('masters.products.edit', $prod->id) }}" class="btn btn-sm btn-outline-secondary py-1 px-2">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </a>
+                                <div class="btn-group btn-group-sm">
+                                    @can('products.update')
+                                    <a href="{{ route('masters.products.edit', $prod->id) }}" class="btn btn-outline-secondary py-1 px-2" title="Edit Product">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </a>
+                                    @endcan
+                                    @can('products.delete')
+                                    <form method="POST" action="{{ route('masters.products.destroy', $prod->id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete chemical product {{ $prod->name }}?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger py-1 px-2" title="Delete Product">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                    @endcan
+                                </div>
                             </td>
                         </tr>
                     @empty

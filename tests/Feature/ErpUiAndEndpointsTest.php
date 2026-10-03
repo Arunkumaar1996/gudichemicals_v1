@@ -408,4 +408,68 @@ class ErpUiAndEndpointsTest extends TestCase
         $response->assertSee('Training Playlist', false);
         $response->assertSee('Module 1: POS Fast Billing Desk');
     }
+
+    public function test_roles_management_renders_and_can_create_custom_role(): void
+    {
+        $response = $this->actingAs($this->admin)->get('/roles');
+        $response->assertStatus(200);
+        $response->assertSee('Roles & Permissions Management');
+        $response->assertSee('Super Admin');
+
+        $storeResponse = $this->actingAs($this->admin)->post('/roles', [
+            'name' => 'Lab Chemist',
+            'permissions' => ['production.view', 'production.create', 'production.finalize'],
+        ]);
+
+        $storeResponse->assertRedirect();
+        $this->assertDatabaseHas('roles', ['name' => 'Lab Chemist']);
+
+        $role = \Spatie\Permission\Models\Role::findByName('Lab Chemist');
+        $this->assertTrue($role->hasPermissionTo('production.finalize'));
+        $this->assertFalse($role->hasPermissionTo('sales.create'));
+    }
+
+    public function test_superadmin_account_is_hidden_from_non_superadmin_users(): void
+    {
+        $cashier = User::where('email', 'cashier@gudichemicals.com')->firstOrFail();
+
+        // When cashier views /users, the developer Super Admin user is NOT visible
+        $response = $this->actingAs($cashier)->get('/users');
+        $response->assertStatus(200);
+        $response->assertDontSee('admin@gudichemicals.com');
+        $response->assertSee('cashier@gudichemicals.com');
+
+        // When Super Admin views /users, Super Admin IS visible
+        $adminResponse = $this->actingAs($this->admin)->get('/users');
+        $adminResponse->assertStatus(200);
+        $adminResponse->assertSee('admin@gudichemicals.com');
+        $adminResponse->assertSee('Developer Account');
+    }
+
+    public function test_superadmin_account_cannot_be_deleted(): void
+    {
+        // Attempting to delete Super Admin is blocked
+        $response = $this->actingAs($this->admin)->delete("/users/{$this->admin->id}");
+        $response->assertRedirect();
+        $this->assertDatabaseHas('users', ['id' => $this->admin->id]);
+    }
+
+    public function test_sidebar_menus_are_filtered_by_role_permissions(): void
+    {
+        $cashier = User::where('email', 'cashier@gudichemicals.com')->firstOrFail();
+
+        // Cashier has sales permissions, but NOT production or settings permissions
+        $cashierResponse = $this->actingAs($cashier)->get('/dashboard');
+        $cashierResponse->assertStatus(200);
+        $cashierResponse->assertSee('POS & Sales Billing', false);
+        $cashierResponse->assertDontSee('Chemical Production');
+        $cashierResponse->assertDontSee('Settings & Users');
+
+        // Super Admin sees all menus
+        $adminResponse = $this->actingAs($this->admin)->get('/dashboard');
+        $adminResponse->assertStatus(200);
+        $adminResponse->assertSee('POS & Sales Billing', false);
+        $adminResponse->assertSee('Chemical Production');
+        $adminResponse->assertSee('Settings & Users', false);
+    }
 }
