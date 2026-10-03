@@ -404,8 +404,8 @@ class ErpUiAndEndpointsTest extends TestCase
     {
         $response = $this->actingAs($this->admin)->get('/guide');
         $response->assertStatus(200);
-        $response->assertSee('User Guide & Video Training', false);
-        $response->assertSee('Interactive Video Training Hub');
+        $response->assertSee('Training Manual', false);
+        $response->assertSee('Training Playlist', false);
         $response->assertSee('Module 1: POS Fast Billing Desk');
     }
 }

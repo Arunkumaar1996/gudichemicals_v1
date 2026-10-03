@@ -1019,9 +1019,9 @@
                 <div class="menu-category">Help & Training</div>
                 <div class="menu-item">
                     <a href="{{ route('guide.index') }}" class="nav-link {{ request()->routeIs('guide.*') ? 'active' : '' }}" style="background: rgba(2, 132, 199, 0.08);">
-                        <span class="menu-icon"><i class="fa-solid fa-circle-play text-info"></i></span>
-                        <span class="menu-title">App Guide & Videos</span>
-                        <span class="badge bg-info text-white ms-auto menu-badge" style="font-size: 0.65rem;">Tutorial</span>
+                        <span class="menu-icon"><i class="fa-solid fa-book-open-reader text-info"></i></span>
+                        <span class="menu-title">Training Manual & Guide</span>
+                        <span class="badge bg-primary text-white ms-auto menu-badge" style="font-size: 0.65rem;">Manual</span>
                     </a>
                 </div>
             </div>
@@ -1072,8 +1072,8 @@
                 </div>
 
                 <div class="d-flex align-items-center gap-1.5 gap-sm-2">
-                    <a href="{{ route('guide.index') }}" class="btn btn-outline-primary btn-sm px-2 fw-semibold d-none d-md-flex align-items-center" title="How to use Gudi Chemicals ERP (Tutorials & Videos)">
-                        <i class="fa-solid fa-circle-play me-1 text-info"></i> User Guide
+                    <a href="{{ route('guide.index') }}" class="btn btn-outline-primary btn-sm px-2 fw-semibold d-none d-md-flex align-items-center" title="How to use Gudi Chemicals ERP (Step-by-Step Training Manual & Workflows)">
+                        <i class="fa-solid fa-book-open-reader me-1 text-info"></i> Training Manual
                     </a>
 
                     <a href="{{ route('pos.index') }}" target="_blank" class="btn btn-success btn-sm px-2 px-sm-3 fw-bold shadow-sm d-flex align-items-center">
@@ -1090,7 +1090,7 @@
                                 <div class="fw-bold">{{ auth()->user()->name ?? 'Administrator' }}</div>
                                 <div class="text-muted small">{{ auth()->user()->email ?? 'admin@gudichemicals.com' }}</div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="{{ route('guide.index') }}"><i class="fa-solid fa-circle-play me-2 text-info"></i> App Guide & Videos</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('guide.index') }}"><i class="fa-solid fa-book-open-reader me-2 text-info"></i> Training Manual & Guide</a></li>
                             <li><a class="dropdown-item py-2" href="{{ route('profile.edit') }}"><i class="fa-solid fa-id-badge me-2 text-muted"></i> Profile & Security</a></li>
                             <li><a class="dropdown-item py-2" href="{{ route('settings.index') }}"><i class="fa-solid fa-sliders me-2 text-muted"></i> ERP Settings</a></li>
                             <li><hr class="dropdown-divider my-1"></li>
